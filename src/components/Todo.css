@@ -1,0 +1,50 @@
+.todo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333333;
+    touch-action: none;
+  }
+  
+  .task-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+  
+  .action-group {
+    display: flex;
+    gap: 20px;
+  }
+  
+
+  .edit-icon {
+    color: #4caf50; /* Green color for edit icon */
+  }
+  
+  .trash-icon {
+    color: #f44336; /* Red color for trash icon */
+  }
+  
+  .icon:hover {
+    color: #ffeb3b; /* Yellow color on hover */
+  }
+
+  .done {
+    text-decoration: line-through;
+    color: #616161;
+  }
+
+  [data-no-dnd] {
+    pointer-events: auto;
+  }
+
+  .drag-handle {
+    cursor: grab;
+    user-select: none;
+    margin-right: 10px;
+  }
+  .drag-handle:active {
+    cursor: grabbing;
+  }
