@@ -3,19 +3,19 @@ import React, { useState } from "react";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import PropTypes from "prop-types";
 import "./Todo.css";
+import { TodoForm } from "./TodoForm";
+
 
 export const Todo = ({ task, deleteTask, editTask }) => {
-  const [isDone, setDone] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const [newTask, setNewTask] = useState(task.task);
   const {attributes, listeners, setNodeRef, transform, transition} = useSortable({ id: task.id,
     disabled: false,
     data: {
         handle:true,
     }
    });
-
 
   const style = {
     transition, 
@@ -27,7 +27,7 @@ export const Todo = ({ task, deleteTask, editTask }) => {
   };
 
   const hangleToggleFinish = (e) => {
-    setDone(e.target.checked);
+    editTask(task.id, task.task, e.target.checked);
   };
 
   const handleEdit = (e) => {
@@ -35,12 +35,9 @@ export const Todo = ({ task, deleteTask, editTask }) => {
     setEditMode(true);
   };
 
-  const handleInputChange = (e) => {
-    setNewTask(e.target.value);
-  };
 
-  const handleSave = () => {
-    editTask(task.id, newTask.trim());
+  const handleSave = (edittedTask) => {
+    editTask(edittedTask.id, edittedTask.task.trim(), edittedTask.isDone);
     setEditMode(false);
   };
 
@@ -53,28 +50,30 @@ export const Todo = ({ task, deleteTask, editTask }) => {
          <span {...listeners} className="drag-handle">☰</span>
       <div
         className="task-group">
-        <input type="checkbox" onChange={hangleToggleFinish} />
-        {editMode ? (
-          <input
-            type="text"
-            value={newTask}
-            onChange={handleInputChange}
-            onBlur={handleSave}
+        <input 
+          type="checkbox"
+          onChange={hangleToggleFinish} 
+          checked={task.isDone}
           />
-        ) : (
-          <div className={isDone ? "done" : ""}>{task.task}</div>
-        )}
+            {editMode ? (
+              <TodoForm
+                initialTask={{ id: task.id, task: task.task, isDone: task.isDone }}
+                editTodo={handleSave} />
+            ): (
+              <div className={task.isDone ? "done" : ""}>{task.task}</div>
+            )}
+           
       </div>
       <div className="action-group">
-        {editMode ? (
-          <button onClick={handleSave}>Save</button>
-        ) : (
-          <FontAwesomeIcon
-            className="icon edit-icon"
-            data-no-dnd
-            icon={faEdit}
-            onClick={handleEdit}
-          />
+        {editMode 
+        ? (<></>) 
+        :(
+           <FontAwesomeIcon
+           className="icon edit-icon"
+           data-no-dnd
+           icon={faEdit}
+           onClick={handleEdit}
+         />
         )}
         <FontAwesomeIcon
           className="icon trash-icon"
@@ -85,5 +84,15 @@ export const Todo = ({ task, deleteTask, editTask }) => {
       </div>
     </li>
   );
+};
+
+Todo.propTypes = {
+  task: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    task: PropTypes.string.isRequired,
+    isDone: PropTypes.bool,
+  }),
+  deleteTask: PropTypes.func.isRequired,
+  editTask: PropTypes.func.isRequired,
 };
 

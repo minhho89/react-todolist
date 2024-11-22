@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { DndContext, closestCorners } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
-
 import { TodoForm } from "./TodoForm";
 import { TodoList } from "./TodoList";
-import { EmptyBanner } from "./EmptyBanner";
+import { EmptyBanner } from "../commons/EmptyBanner";
+import PropTypes from 'prop-types';
+
 
 export const TodoWrapper = () => {
   const [todos, setTodos] = useState([
-    { id: 1, task: "Learn React" },
-    { id: 2, task: "Learn Vue" },
-    { id: 3, task: "Learn Angular" },
+    { id: '1', task: "Learn React", isDone: true },
+    { id: '2', task: "Learn Vue", isDone: false },
+    { id: '3', task: "Learn Angular", isDone: false },
   ]);
 
   const addTodo = (todo) => {
@@ -18,14 +19,13 @@ export const TodoWrapper = () => {
   };
 
   const deleteTodo = (id) => {
-    console.log("deleteTodo", id);
     setTodos(todos.filter((todo) => todo.id !== id));
   };
 
-  const editTodo = (id, newTask) => {
+  const editTodo = (id, newTask, isDone) => {
     setTodos((prevTodos) =>
       prevTodos.map((todo) =>
-        todo.id === id ? { ...todo, task: newTask.trim() } : todo
+        todo.id === id ? { ...todo, task: newTask.trim(), isDone: isDone } : todo
       )
     );
   };
@@ -62,4 +62,13 @@ export const TodoWrapper = () => {
       </ul>
     </section>
   );
+};
+
+TodoWrapper.propTypes = {
+  todos: PropTypes.array,
+  setTodos: PropTypes.func,
+  addTodo: PropTypes.func,
+  deleteTodo: PropTypes.func,
+  editTodo: PropTypes.func,
+  handleOnDragEnd: PropTypes.func,
 };

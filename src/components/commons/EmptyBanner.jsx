@@ -1,5 +1,5 @@
 import React from 'react'
-import EmptyImage from '../assets/img/empty.png';
+import EmptyImage from '../../assets/img/empty.png';
 
 export const EmptyBanner = () => {
   return (

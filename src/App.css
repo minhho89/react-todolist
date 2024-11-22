@@ -21,6 +21,21 @@ form {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
+.form-edit {
+  flex: 1;
+  margin: auto;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+  background-color: #2a2a2a;
+  color: #ffffff;
+  outline: none;
+  transition: 0.3s;
+  box-shadow: none;
+}
+
 .icon {
   cursor: pointer;
   transition: color 0.3s;
