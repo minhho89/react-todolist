@@ -11,6 +11,9 @@ import { dummyTodos, todoPropTypes, updateTodo } from "../models/Todo";
 export const TodoWrapper = () => {
   const [todos, setTodos] = useState(dummyTodos);
 
+  const activeTodos = todos.filter((todo) => !todo.isDone);
+  const completedTodos = todos.filter((todo) => todo.isDone);
+
   const addTodo = (todo) => {
     setTodos([...todos, todo]);
   };
@@ -48,7 +51,7 @@ export const TodoWrapper = () => {
         >
           {todos.length !== 0 ? (
             <TodoList
-              todos={todos}
+            todos={activeTodos}
               deleteTodo={deleteTodo}
               editTodo={editTodo}
             />
@@ -56,6 +59,14 @@ export const TodoWrapper = () => {
             <EmptyBanner />
           )}
         </DndContext>
+      </ul>
+      <h2>Completed Tasks</h2>
+      <ul>
+        <TodoList
+          todos={completedTodos}
+          deleteTodo={deleteTodo}
+          editTodo={editTodo}
+        />
       </ul>
     </section>
   );
