@@ -1,59 +1,59 @@
 .todo {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #333333;
-    touch-action: none;
-  }
-  
-  .task-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-  }
-  
-  .action-group {
-    display: flex;
-    gap: 20px;
-  }
-  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #333333;
+  touch-action: none;
+  width: 100%;
+}
 
-  .edit-icon {
-    color: #4caf50; /* Green color for edit icon */
-  }
-  
-  .trash-icon {
-    color: #f44336; /* Red color for trash icon */
-  }
-  
-  .icon:hover {
-    color: #ffeb3b; /* Yellow color on hover */
-  }
+.task-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
 
-  .done {
-    text-decoration: line-through;
-    color: #616161;
-  }
+.action-group {
+  display: flex;
+  gap: 20px;
+}
 
-  [data-no-dnd] {
-    pointer-events: auto;
-  }
+.edit-icon {
+  color: #4caf50; /* Green color for edit icon */
+}
 
-  .drag-handle {
-    cursor: grab;
-    user-select: none;
-    margin-right: 10px;
-  }
-  .drag-handle:active {
-    cursor: grabbing;
-  }
+.trash-icon {
+  color: #f44336; /* Red color for trash icon */
+}
 
-  .checkbox {
-    display: none;
-  }
+.icon:hover {
+  color: #ffeb3b; /* Yellow color on hover */
+}
 
-  /* Custom checkbox (hình tròn) */
+.done {
+  text-decoration: line-through;
+  color: #616161;
+}
+
+[data-no-dnd] {
+  pointer-events: auto;
+}
+
+.drag-handle {
+  cursor: grab;
+  user-select: none;
+  margin-right: 10px;
+}
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.checkbox {
+  display: none;
+}
+
+/* Custom checkbox (hình tròn) */
 .checkbox-label {
   width: 20px;
   height: 20px;
@@ -68,19 +68,18 @@
 
 /* Khi checkbox được chọn */
 .checkbox:checked + .checkbox-label {
-  background-color: #ffeb3b;
-  border-color: #ffeb3b;
+  background-color: #4caf50;
+  border-color: #4caf50;
 }
 
-/* Điểm tròn bên trong để biểu thị trạng thái checked */
+/* Dấu check mark bên trong khi checkbox được chọn */
 .checkbox:checked + .checkbox-label::after {
-  content: "";
+  content: "\2713"; /* Ký tự Unicode cho dấu check mark */
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 10px;
-  height: 10px;
-  background-color: #2a2a2a;
-  border-radius: 50%;
   transform: translate(-50%, -50%);
+  font-size: 20px; /* Kích thước của dấu check */
+  font-weight: bold;
+  color: #2a2a2a; /* Màu của dấu check */
 }

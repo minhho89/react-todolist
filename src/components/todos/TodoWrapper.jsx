@@ -6,6 +6,7 @@ import { TodoList } from "./TodoList";
 import { EmptyBanner } from "../commons/EmptyBanner";
 import PropTypes from "prop-types";
 import { dummyTodos, todoPropTypes, updateTodo } from "../models/Todo";
+import { AnimatePresence, motion } from "motion/react";
 
 export const TodoWrapper = () => {
   const [todos, setTodos] = useState(dummyTodos);
@@ -31,6 +32,11 @@ export const TodoWrapper = () => {
 
   const handleOnDragEnd = (event) => {
     const { active, over } = event;
+
+    if (over === null) {
+      return;
+    }
+
     if (active.id !== over.id) {
       const oldIndex = todos.findIndex((todo) => todo.id === active.id);
       const newIndex = todos.findIndex((todo) => todo.id === over.id);
@@ -48,6 +54,7 @@ export const TodoWrapper = () => {
           onDragEnd={handleOnDragEnd}
           collisionDetection={closestCorners}
         >
+          <AnimatePresence>
           {activeTodos.length !== 0 ? (
             <TodoList
               todos={activeTodos}
@@ -57,10 +64,16 @@ export const TodoWrapper = () => {
           ) : (
             <EmptyBanner />
           )}
+          </AnimatePresence>
         </DndContext>
       </ul>
-      <h2>Completed Tasks</h2>
+      <motion.h2 layout>Completed Tasks</motion.h2>
       <ul>
+      <DndContext
+          onDragEnd={handleOnDragEnd}
+          collisionDetection={closestCorners}
+        >
+        <AnimatePresence>
         {completedTodos.length !== 0 ? (
           <TodoList
             todos={completedTodos}
@@ -70,13 +83,15 @@ export const TodoWrapper = () => {
         ) : (
           <EmptyBanner />
         )}
+        </AnimatePresence>
+      </DndContext>
       </ul>
     </section>
   );
 };
 
 TodoWrapper.propTypes = {
-  todos: PropTypes.arrayOf(todoPropTypes).isRequired,
+  todos: PropTypes.arrayOf(todoPropTypes),
   setTodos: PropTypes.func,
   addTodo: PropTypes.func,
   deleteTodo: PropTypes.func,

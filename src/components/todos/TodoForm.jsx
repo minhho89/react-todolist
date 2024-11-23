@@ -48,5 +48,5 @@ export const TodoForm = ({ addTodo, editTodo, initialTask }) => {
 TodoForm.propTypes = {
   addTodo: PropTypes.func,
   editTodo: PropTypes.func,
-  initialTask: todoPropTypes
+  initialTask: PropTypes.shape(todoPropTypes),
 };

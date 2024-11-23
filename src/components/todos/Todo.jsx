@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import "./Todo.css";
 import { TodoForm } from "./TodoForm";
 import { todoPropTypes, updateTodo } from "../models/Todo";
+import { motion } from "framer-motion";
 
 
 export const Todo = ({ task, deleteTask, editTask }) => {
@@ -46,7 +47,13 @@ export const Todo = ({ task, deleteTask, editTask }) => {
   };
 
   return (
-    <li 
+    <motion.li 
+    key={task.id}
+    initial={{ opacity: 0, y: task.isDone ? -20 : 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: 20 }}
+    transition={{ duration: 0.3 }}>
+    <div
     ref={setNodeRef} 
     {...attributes} 
     style={style} 
@@ -89,12 +96,13 @@ export const Todo = ({ task, deleteTask, editTask }) => {
           onClick={handleDelete}
         />
       </div>
-    </li>
+      </div>
+    </motion.li>
   );
 };
 
 Todo.propTypes = {
-  task: todoPropTypes.isRequired,
+  task: PropTypes.shape(todoPropTypes).isRequired,
   deleteTask: PropTypes.func.isRequired,
   editTask: PropTypes.func.isRequired,
 };

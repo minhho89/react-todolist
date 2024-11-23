@@ -25,11 +25,11 @@ export const TodoList = ({ todos, deleteTodo, editTodo }) => {
                 />
             ))}
         </SortableContext>
-  )
+  );
 }
 
 TodoList.propTypes = {
-  todos: PropTypes.arrayOf(todoPropTypes).isRequired,
+  todos: PropTypes.arrayOf(PropTypes.shape(todoPropTypes)).isRequired,
   deleteTodo: PropTypes.func.isRequired,
   editTodo: PropTypes.func.isRequired,
 }
