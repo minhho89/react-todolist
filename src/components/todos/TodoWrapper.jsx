@@ -7,6 +7,8 @@ import { EmptyBanner } from "../commons/EmptyBanner";
 import PropTypes from "prop-types";
 import { dummyTodos, todoPropTypes, updateTodo } from "../models/Todo";
 import { AnimatePresence, motion } from "motion/react";
+import EmptyFinishedImage from "../../assets/img/empty-finished.svg";
+import EmptyTodoImage from "../../assets/img/empty-todo.svg";
 
 export const TodoWrapper = () => {
   const [todos, setTodos] = useState(dummyTodos);
@@ -47,8 +49,9 @@ export const TodoWrapper = () => {
     }
   };
 
-  const handleIsMyTasksOpen = () => setIsMyTasksOpen(prev => !prev);
-  const handleIsCompletedTasksOpen = () => setIsCompletedTasksOpen(prev => !prev);
+  const handleIsMyTasksOpen = () => setIsMyTasksOpen((prev) => !prev);
+  const handleIsCompletedTasksOpen = () =>
+    setIsCompletedTasksOpen((prev) => !prev);
 
   return (
     <section>
@@ -60,54 +63,58 @@ export const TodoWrapper = () => {
         </div>
       </h2>
       <ul>
-        {
-          isMyTasksOpen &&
+        {isMyTasksOpen && (
           <DndContext
-          onDragEnd={handleOnDragEnd}
-          collisionDetection={closestCorners}
-        >
-          <AnimatePresence>
-          {activeTodos.length !== 0 ? (
-            <TodoList
-              todos={activeTodos}
-              deleteTodo={deleteTodo}
-              editTodo={editTodo}
-            />
-          ) : (
-            <EmptyBanner />
-          )}
-          </AnimatePresence>
-        </DndContext>
-        }
+            onDragEnd={handleOnDragEnd}
+            collisionDetection={closestCorners}
+          >
+            <AnimatePresence>
+              {activeTodos.length !== 0 ? (
+                <TodoList
+                  todos={activeTodos}
+                  deleteTodo={deleteTodo}
+                  editTodo={editTodo}
+                />
+              ) : (
+                <EmptyBanner src={EmptyTodoImage} message="Add more tasks!" />
+              )}
+            </AnimatePresence>
+          </DndContext>
+        )}
       </ul>
       <hr />
-      <motion.h2 
-      layout
-      onClick={handleIsCompletedTasksOpen}
-      className="pointer"
+      <motion.h2
+        layout
+        onClick={handleIsCompletedTasksOpen}
+        className="pointer"
       >
         <div className="accordion">
           <span>Completed Tasks</span>
           <span>{isCompletedTasksOpen ? "▲" : "▼"}</span>
         </div>
-        </motion.h2>
+      </motion.h2>
       <ul>
-      {isCompletedTasksOpen && <DndContext
-          onDragEnd={handleOnDragEnd}
-          collisionDetection={closestCorners}
-        >
-        <AnimatePresence>
-        {completedTodos.length !== 0 ? (
-          <TodoList
-            todos={completedTodos}
-            deleteTodo={deleteTodo}
-            editTodo={editTodo}
-          />
-        ) : (
-          <EmptyBanner />
+        {isCompletedTasksOpen && (
+          <DndContext
+            onDragEnd={handleOnDragEnd}
+            collisionDetection={closestCorners}
+          >
+            <AnimatePresence>
+              {completedTodos.length !== 0 ? (
+                <TodoList
+                  todos={completedTodos}
+                  deleteTodo={deleteTodo}
+                  editTodo={editTodo}
+                />
+              ) : (
+                <EmptyBanner
+                  src={EmptyFinishedImage}
+                  message="No completed tasks!"
+                />
+              )}
+            </AnimatePresence>
+          </DndContext>
         )}
-        </AnimatePresence>
-      </DndContext>}
       </ul>
     </section>
   );

@@ -1,12 +1,16 @@
 import './App.css';
 import { TodoWrapper } from './components/todos/TodoWrapper';
+import { motion } from 'framer-motion';
 
 
 function App() {
   return (
-    <div className="App">
-      <TodoWrapper />
-    </div>
+    <motion.div 
+    layout 
+    transition={{ duration: 0.5}}
+    className="App">
+        <TodoWrapper />
+    </motion.div>
   );
 }
 

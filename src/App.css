@@ -171,6 +171,14 @@ input[type="checkbox"] {
   align-items: center;
 }
 
+.noti-image img {
+  width: 100%;
+}
+
+.noti-image h3 {
+  color: #ffc107;
+}
+
 .pointer {
   cursor: pointer;
 }
