@@ -48,3 +48,39 @@
   .drag-handle:active {
     cursor: grabbing;
   }
+
+  .checkbox {
+    display: none;
+  }
+
+  /* Custom checkbox (hình tròn) */
+.checkbox-label {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ffeb3b;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  background-color: #2a2a2a;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+/* Khi checkbox được chọn */
+.checkbox:checked + .checkbox-label {
+  background-color: #ffeb3b;
+  border-color: #ffeb3b;
+}
+
+/* Điểm tròn bên trong để biểu thị trạng thái checked */
+.checkbox:checked + .checkbox-label::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background-color: #2a2a2a;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}

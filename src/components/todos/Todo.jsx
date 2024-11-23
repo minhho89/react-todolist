@@ -56,9 +56,12 @@ export const Todo = ({ task, deleteTask, editTask }) => {
         className="task-group">
         <input 
           type="checkbox"
+          className="checkbox"
+          id={`task-${task.id}`}
           onChange={hangleToggleFinish} 
           checked={task.isDone}
           />
+          <label htmlFor={`task-${task.id}`} className="checkbox-label"></label>
             {editMode ? (
               <TodoForm
                 initialTask={{ id: task.id, task: task.task, isDone: task.isDone }}
