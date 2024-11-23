@@ -4,9 +4,8 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { TodoForm } from "./TodoForm";
 import { TodoList } from "./TodoList";
 import { EmptyBanner } from "../commons/EmptyBanner";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import { dummyTodos, todoPropTypes, updateTodo } from "../models/Todo";
-
 
 export const TodoWrapper = () => {
   const [todos, setTodos] = useState(dummyTodos);
@@ -49,9 +48,9 @@ export const TodoWrapper = () => {
           onDragEnd={handleOnDragEnd}
           collisionDetection={closestCorners}
         >
-          {todos.length !== 0 ? (
+          {activeTodos.length !== 0 ? (
             <TodoList
-            todos={activeTodos}
+              todos={activeTodos}
               deleteTodo={deleteTodo}
               editTodo={editTodo}
             />
@@ -62,11 +61,15 @@ export const TodoWrapper = () => {
       </ul>
       <h2>Completed Tasks</h2>
       <ul>
-        <TodoList
-          todos={completedTodos}
-          deleteTodo={deleteTodo}
-          editTodo={editTodo}
-        />
+        {completedTodos.length !== 0 ? (
+          <TodoList
+            todos={completedTodos}
+            deleteTodo={deleteTodo}
+            editTodo={editTodo}
+          />
+        ) : (
+          <EmptyBanner />
+        )}
       </ul>
     </section>
   );
