@@ -1,6 +1,7 @@
 import React from 'react'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Todo } from './Todo';
+import { todoPropTypes } from '../models/Todo';
 import PropTypes from 'prop-types';
 
 export const TodoList = ({ todos, deleteTodo, editTodo }) => {
@@ -9,8 +10,8 @@ export const TodoList = ({ todos, deleteTodo, editTodo }) => {
         deleteTodo(id);
     };
 
-    const handleEditTask = (id, newTask, isDone) => {
-      editTodo(id, newTask, isDone);
+    const handleEditTask = (updatedTodo) => {
+      editTodo(updatedTodo);
     };
 
   return (
@@ -18,7 +19,7 @@ export const TodoList = ({ todos, deleteTodo, editTodo }) => {
             {todos.map((todo) => (
                 <Todo
                 key={todo.id}
-                task={{ id: todo.id, task: todo.task, isDone: todo.isDone }}
+                task={todo}
                 deleteTask={handleDeleteTodo}
                 editTask={handleEditTask}
                 />
@@ -28,13 +29,7 @@ export const TodoList = ({ todos, deleteTodo, editTodo }) => {
 }
 
 TodoList.propTypes = {
-  todos: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      task: PropTypes.string.isRequired,
-      isDone: PropTypes.bool,
-    })
-  ),
+  todos: PropTypes.arrayOf(todoPropTypes).isRequired,
   deleteTodo: PropTypes.func.isRequired,
   editTodo: PropTypes.func.isRequired,
 }

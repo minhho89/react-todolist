@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
+import React, { useState } from "react";
 import { ErrorModal } from "../commons/ErrorModal";
 import { TodoInputForm } from "./TodoInputForm";
+import { createTodo, todoPropTypes, updateTodo } from "../models/Todo";
 import PropTypes from "prop-types";
 
 
@@ -16,10 +16,11 @@ export const TodoForm = ({ addTodo, editTodo, initialTask }) => {
       return;
     }
     if (initialTask) {
-      const updatedTodo = { ...todo, task: inputTask.trim() };
+      const updatedTodo = updateTodo( todo, {task: inputTask.trim()});
       editTodo && editTodo(updatedTodo);
     } else {
-      addTodo && addTodo({ id: uuidv4(), task: inputTask.trim(), isDone: false });
+      const newTodo = createTodo(inputTask.trim());
+      addTodo && addTodo(newTodo);
     }
     setTodo("");
   };
@@ -47,9 +48,5 @@ export const TodoForm = ({ addTodo, editTodo, initialTask }) => {
 TodoForm.propTypes = {
   addTodo: PropTypes.func,
   editTodo: PropTypes.func,
-  initialTask: PropTypes.shape({
-    id: PropTypes.string,
-    task: PropTypes.string,
-    isDone: PropTypes.bool,
-  }),
+  initialTask: todoPropTypes
 };

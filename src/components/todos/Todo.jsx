@@ -6,11 +6,13 @@ import { CSS } from "@dnd-kit/utilities";
 import PropTypes from "prop-types";
 import "./Todo.css";
 import { TodoForm } from "./TodoForm";
+import { todoPropTypes, updateTodo } from "../models/Todo";
 
 
 export const Todo = ({ task, deleteTask, editTask }) => {
   const [editMode, setEditMode] = useState(false);
-  const {attributes, listeners, setNodeRef, transform, transition} = useSortable({ id: task.id,
+  const {attributes, listeners, setNodeRef, transform, transition} = useSortable({ 
+    id: task.id,
     disabled: false,
     data: {
         handle:true,
@@ -27,7 +29,8 @@ export const Todo = ({ task, deleteTask, editTask }) => {
   };
 
   const hangleToggleFinish = (e) => {
-    editTask(task.id, task.task, e.target.checked);
+    const updatedTodo = updateTodo(task, { isDone: e.target.checked });
+    editTask(updatedTodo);
   };
 
   const handleEdit = (e) => {
@@ -37,7 +40,8 @@ export const Todo = ({ task, deleteTask, editTask }) => {
 
 
   const handleSave = (edittedTask) => {
-    editTask(edittedTask.id, edittedTask.task.trim(), edittedTask.isDone);
+    const updatedTodo = updateTodo(task, { task: edittedTask.task.trim(), isDone: edittedTask.isDone });
+    editTask(updatedTodo);
     setEditMode(false);
   };
 
@@ -87,11 +91,7 @@ export const Todo = ({ task, deleteTask, editTask }) => {
 };
 
 Todo.propTypes = {
-  task: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    task: PropTypes.string.isRequired,
-    isDone: PropTypes.bool,
-  }),
+  task: todoPropTypes.isRequired,
   deleteTask: PropTypes.func.isRequired,
   editTask: PropTypes.func.isRequired,
 };

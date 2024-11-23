@@ -5,14 +5,11 @@ import { TodoForm } from "./TodoForm";
 import { TodoList } from "./TodoList";
 import { EmptyBanner } from "../commons/EmptyBanner";
 import PropTypes from 'prop-types';
+import { dummyTodos, todoPropTypes, updateTodo } from "../models/Todo";
 
 
 export const TodoWrapper = () => {
-  const [todos, setTodos] = useState([
-    { id: '1', task: "Learn React", isDone: true },
-    { id: '2', task: "Learn Vue", isDone: false },
-    { id: '3', task: "Learn Angular", isDone: false },
-  ]);
+  const [todos, setTodos] = useState(dummyTodos);
 
   const addTodo = (todo) => {
     setTodos([...todos, todo]);
@@ -22,10 +19,10 @@ export const TodoWrapper = () => {
     setTodos(todos.filter((todo) => todo.id !== id));
   };
 
-  const editTodo = (id, newTask, isDone) => {
+  const editTodo = (updatedTodo) => {
     setTodos((prevTodos) =>
       prevTodos.map((todo) =>
-        todo.id === id ? { ...todo, task: newTask.trim(), isDone: isDone } : todo
+        todo.id === updatedTodo.id ? updateTodo(todo, updatedTodo) : todo
       )
     );
   };
@@ -65,7 +62,7 @@ export const TodoWrapper = () => {
 };
 
 TodoWrapper.propTypes = {
-  todos: PropTypes.array,
+  todos: PropTypes.arrayOf(todoPropTypes).isRequired,
   setTodos: PropTypes.func,
   addTodo: PropTypes.func,
   deleteTodo: PropTypes.func,
