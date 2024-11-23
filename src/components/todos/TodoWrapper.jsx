@@ -10,6 +10,8 @@ import { AnimatePresence, motion } from "motion/react";
 
 export const TodoWrapper = () => {
   const [todos, setTodos] = useState(dummyTodos);
+  const [isMyTasksOpen, setIsMyTasksOpen] = useState(true);
+  const [isCompletedTasksOpen, setIsCompletedTasksOpen] = useState(true);
 
   const activeTodos = todos.filter((todo) => !todo.isDone);
   const completedTodos = todos.filter((todo) => todo.isDone);
@@ -45,12 +47,19 @@ export const TodoWrapper = () => {
     }
   };
 
+  const handleIsMyTasksOpen = () => setIsMyTasksOpen(prev => !prev);
+  const handleIsCompletedTasksOpen = () => setIsCompletedTasksOpen(prev => !prev);
+
   return (
     <section>
       <TodoForm addTodo={addTodo} />
-      <h2>My Tasks</h2>
+      <h2 onClick={handleIsMyTasksOpen} className="pointer">
+      My Tasks {isMyTasksOpen ? "▲" : "▼"}
+      </h2>
       <ul>
-        <DndContext
+        {
+          isMyTasksOpen &&
+          <DndContext
           onDragEnd={handleOnDragEnd}
           collisionDetection={closestCorners}
         >
@@ -66,10 +75,16 @@ export const TodoWrapper = () => {
           )}
           </AnimatePresence>
         </DndContext>
+        }
       </ul>
-      <motion.h2 layout>Completed Tasks</motion.h2>
+      <hr />
+      <motion.h2 
+      layout
+      onClick={handleIsCompletedTasksOpen}
+      className="pointer"
+      >Completed Tasks {isCompletedTasksOpen ? "▲" : "▼"}</motion.h2>
       <ul>
-      <DndContext
+      {isCompletedTasksOpen && <DndContext
           onDragEnd={handleOnDragEnd}
           collisionDetection={closestCorners}
         >
@@ -84,7 +99,7 @@ export const TodoWrapper = () => {
           <EmptyBanner />
         )}
         </AnimatePresence>
-      </DndContext>
+      </DndContext>}
       </ul>
     </section>
   );
