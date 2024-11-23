@@ -17,7 +17,7 @@ export const TodoWrapper = () => {
   const completedTodos = todos.filter((todo) => todo.isDone);
 
   const addTodo = (todo) => {
-    setTodos([...todos, todo]);
+    setTodos([todo, ...todos]);
   };
 
   const deleteTodo = (id) => {
@@ -54,7 +54,10 @@ export const TodoWrapper = () => {
     <section>
       <TodoForm addTodo={addTodo} />
       <h2 onClick={handleIsMyTasksOpen} className="pointer">
-      My Tasks {isMyTasksOpen ? "▲" : "▼"}
+        <div className="accordion">
+          <span>My Tasks</span>
+          <span>{isMyTasksOpen ? "▲" : "▼"}</span>
+        </div>
       </h2>
       <ul>
         {
@@ -82,7 +85,12 @@ export const TodoWrapper = () => {
       layout
       onClick={handleIsCompletedTasksOpen}
       className="pointer"
-      >Completed Tasks {isCompletedTasksOpen ? "▲" : "▼"}</motion.h2>
+      >
+        <div className="accordion">
+          <span>Completed Tasks</span>
+          <span>{isCompletedTasksOpen ? "▲" : "▼"}</span>
+        </div>
+        </motion.h2>
       <ul>
       {isCompletedTasksOpen && <DndContext
           onDragEnd={handleOnDragEnd}

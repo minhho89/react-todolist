@@ -174,3 +174,9 @@ input[type="checkbox"] {
 .pointer {
   cursor: pointer;
 }
+
+.accordion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
