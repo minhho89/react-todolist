@@ -5,23 +5,14 @@ import { todoPropTypes } from '../models/Todo';
 import PropTypes from 'prop-types';
 
 export const TodoList = ({ todos, deleteTodo, editTodo }) => {
-
-    const handleDeleteTodo = (id) => {
-        deleteTodo(id);
-    };
-
-    const handleEditTask = (updatedTodo) => {
-      editTodo(updatedTodo);
-    };
-
   return (
     <SortableContext items={todos} strategy={verticalListSortingStrategy} >
             {todos.map((todo) => (
                 <Todo
                 key={todo.id}
                 task={todo}
-                deleteTask={handleDeleteTodo}
-                editTask={handleEditTask}
+                deleteTask={deleteTodo}
+                editTask={editTodo}
                 />
             ))}
         </SortableContext>

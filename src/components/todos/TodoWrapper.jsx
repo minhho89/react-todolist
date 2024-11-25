@@ -9,6 +9,56 @@ import { dummyTodos, todoPropTypes, updateTodo } from "../models/Todo";
 import { AnimatePresence, motion } from "motion/react";
 import EmptyFinishedImage from "../../assets/img/empty-finished.svg";
 import EmptyTodoImage from "../../assets/img/empty-todo.svg";
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+const Section = ({ title, isOpen, toggleSection, children }) => (
+  <>
+    <motion.h2 layout onClick={toggleSection} className="pointer">
+      <div className="accordion">
+        <span>{title}</span>
+        <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} />
+      </div>
+    </motion.h2>
+    {isOpen && children}
+  </>
+);
+
+Section.propTypes = {
+  title: PropTypes.string.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  toggleSection: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
+};
+
+const TodoSectionContent = ({ todos, deleteTodo, editTodo, emptyBannerSrc, emptyBannerMessage }) => (
+  todos.length ? (
+    <TodoList todos={todos} deleteTodo={deleteTodo} editTodo={editTodo} />
+  ) : (
+    <EmptyBanner src={emptyBannerSrc} message={emptyBannerMessage} />
+  )
+);
+
+TodoSectionContent.propTypes = {
+  todos: PropTypes.arrayOf(todoPropTypes).isRequired,
+  deleteTodo: PropTypes.func.isRequired,
+  editTodo: PropTypes.func.isRequired,
+  emptyBannerSrc: PropTypes.string.isRequired,
+  emptyBannerMessage: PropTypes.string.isRequired,
+};
+
+
+const DraggableTodoList = ({ todos, onDragEnd, children }) => (
+  <DndContext onDragEnd={onDragEnd} collisionDetection={closestCorners}>
+    <AnimatePresence>{children}</AnimatePresence>
+  </DndContext>
+);
+
+DraggableTodoList.propTypes = {
+  todos: PropTypes.arrayOf(todoPropTypes).isRequired,
+  onDragEnd: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
+};
 
 export const TodoWrapper = () => {
   const [todos, setTodos] = useState(dummyTodos);
@@ -17,6 +67,8 @@ export const TodoWrapper = () => {
 
   const activeTodos = todos.filter((todo) => !todo.isDone);
   const completedTodos = todos.filter((todo) => todo.isDone);
+
+  const handleToggleSelection = (setter) =>  setter((prev) => !prev);
 
   const addTodo = (todo) => {
     setTodos([todo, ...todos]);
@@ -37,85 +89,50 @@ export const TodoWrapper = () => {
   const handleOnDragEnd = (event) => {
     const { active, over } = event;
 
-    if (over === null) {
-      return;
-    }
+    if (!over || active.id === over.id) return;
 
     if (active.id !== over.id) {
       const oldIndex = todos.findIndex((todo) => todo.id === active.id);
       const newIndex = todos.findIndex((todo) => todo.id === over.id);
-      const newTodos = arrayMove(todos, oldIndex, newIndex);
-      setTodos(newTodos);
+      setTodos(arrayMove(todos, oldIndex, newIndex));
     }
   };
-
-  const handleIsMyTasksOpen = () => setIsMyTasksOpen((prev) => !prev);
-  const handleIsCompletedTasksOpen = () =>
-    setIsCompletedTasksOpen((prev) => !prev);
 
   return (
     <section>
       <TodoForm addTodo={addTodo} />
-      <h2 onClick={handleIsMyTasksOpen} className="pointer">
-        <div className="accordion">
-          <span>My Tasks</span>
-          <span>{isMyTasksOpen ? "▲" : "▼"}</span>
-        </div>
-      </h2>
-      <ul>
-        {isMyTasksOpen && (
-          <DndContext
-            onDragEnd={handleOnDragEnd}
-            collisionDetection={closestCorners}
-          >
-            <AnimatePresence>
-              {activeTodos.length !== 0 ? (
-                <TodoList
-                  todos={activeTodos}
-                  deleteTodo={deleteTodo}
-                  editTodo={editTodo}
-                />
-              ) : (
-                <EmptyBanner src={EmptyTodoImage} message="Add more tasks!" />
-              )}
-            </AnimatePresence>
-          </DndContext>
-        )}
-      </ul>
-      <hr />
-      <motion.h2
-        layout
-        onClick={handleIsCompletedTasksOpen}
-        className="pointer"
+      <Section
+        title="My Tasks"
+        isOpen={isMyTasksOpen}
+        toggleSection={() => handleToggleSelection(setIsMyTasksOpen)}
       >
-        <div className="accordion">
-          <span>Completed Tasks</span>
-          <span>{isCompletedTasksOpen ? "▲" : "▼"}</span>
-        </div>
-      </motion.h2>
-      <ul>
-        {isCompletedTasksOpen && (
-          <DndContext
-            onDragEnd={handleOnDragEnd}
-            collisionDetection={closestCorners}
-          >
-            <AnimatePresence>
-              {completedTodos.length !== 0 ? (
-                <TodoList
-                  todos={completedTodos}
-                  deleteTodo={deleteTodo}
-                  editTodo={editTodo}
-                />
-              ) : (
-                <EmptyBanner
-                  src={EmptyFinishedImage}
-                  message="No completed tasks!"
-                />
-              )}
-            </AnimatePresence>
-          </DndContext>
-        )}
-      </ul>
+        <DraggableTodoList todos={activeTodos} onDragEnd={handleOnDragEnd}>
+          <TodoSectionContent
+            todos={activeTodos}
+            deleteTodo={deleteTodo}
+            editTodo={editTodo}
+            emptyBannerSrc={EmptyTodoImage}
+            emptyBannerMessage="Add more tasks!"
+          />
+        </DraggableTodoList>
+      </Section>
+      
+      <hr />
+      <Section
+        title="Completed Tasks"
+        isOpen={isCompletedTasksOpen}
+        toggleSection={() => handleToggleSelection(setIsCompletedTasksOpen)}
+      >
+        <DraggableTodoList todos={completedTodos} onDragEnd={handleOnDragEnd}>
+          <TodoSectionContent
+            todos={completedTodos}
+            deleteTodo={deleteTodo}
+            editTodo={editTodo}
+            emptyBannerSrc={EmptyFinishedImage}
+            emptyBannerMessage="No completed tasks!"
+          />
+        </DraggableTodoList>
+      </Section>
     </section>
   );
 };

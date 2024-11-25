@@ -17,10 +17,10 @@ export const TodoForm = ({ addTodo, editTodo, initialTask }) => {
     }
     if (initialTask) {
       const updatedTodo = updateTodo( todo, {task: inputTask.trim()});
-      editTodo && editTodo(updatedTodo);
+      editTodo?.(updatedTodo);
     } else {
       const newTodo = createTodo(inputTask.trim());
-      addTodo && addTodo(newTodo);
+      addTodo?.(newTodo);
     }
     setTodo("");
   };
