@@ -6,11 +6,13 @@ import { CSS } from "@dnd-kit/utilities";
 import PropTypes from "prop-types";
 import "./Todo.css";
 import { TodoForm } from "./TodoForm";
+import { TodoDetailsModal } from "./TodoDetailsModal";
 import { todoPropTypes, updateTodo } from "../models/Todo";
 import { motion } from "framer-motion";
 
 export const Todo = ({ task, deleteTask, editTask }) => {
   const [editMode, setEditMode] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
       id: task.id,
@@ -30,7 +32,10 @@ export const Todo = ({ task, deleteTask, editTask }) => {
   };
 
   const hangleToggleFinish = (e) => {
-    const updatedTodo = updateTodo(task, { isDone: e.target.checked });
+    const updatedTodo = updateTodo(task, { 
+      isDone: e.target.checked,
+      // updateAt: new Date(),
+    });
     editTask(updatedTodo);
   };
 
@@ -43,6 +48,7 @@ export const Todo = ({ task, deleteTask, editTask }) => {
     const updatedTodo = updateTodo(task, {
       task: edittedTask.task.trim(),
       isDone: edittedTask.isDone,
+      updatedAt: new Date(),
     });
     editTask(updatedTodo);
     setEditMode(false);
@@ -56,11 +62,17 @@ export const Todo = ({ task, deleteTask, editTask }) => {
       e.target.tagName !== "LABEL" &&
       !e.target.classList.contains("icon")
     ) {
-      console.log("Main Todo component clicked");
+      setIsDetailModalOpen(true);
     }
   };
 
+  const handleDetailModalClose = () => {
+    setIsDetailModalOpen(false);
+  };
+
   return (
+    <>
+    
     <motion.li
       key={task.id}
       initial={{ opacity: 0, y: task.isDone ? -20 : 20 }}
@@ -120,7 +132,15 @@ export const Todo = ({ task, deleteTask, editTask }) => {
         </div>
       </div>
     </motion.li>
+     <TodoDetailsModal 
+     isOpen={isDetailModalOpen} 
+     onClose={handleDetailModalClose}
+     todo={task}
+     editTodo={editTask}
+     />
+    </>
   );
+ 
 };
 
 Todo.propTypes = {
