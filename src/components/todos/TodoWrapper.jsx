@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DndContext, closestCorners } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { TodoForm } from "./TodoForm";
 import { TodoList } from "./TodoList";
 import { EmptyBanner } from "../commons/EmptyBanner";
 import PropTypes from "prop-types";
-import { dummyTodos, todoPropTypes, updateTodo } from "../models/Todo";
+import { todoPropTypes, updateTodo } from "../models/Todo";
+import { getTodos } from "../../api/todoService";
 import { AnimatePresence, motion } from "motion/react";
 import EmptyFinishedImage from "../../assets/img/empty-finished.svg";
 import EmptyTodoImage from "../../assets/img/empty-todo.svg";
@@ -61,9 +62,21 @@ DraggableTodoList.propTypes = {
 };
 
 export const TodoWrapper = () => {
-  const [todos, setTodos] = useState(dummyTodos);
+  const [todos, setTodos] = useState([]);
   const [isMyTasksOpen, setIsMyTasksOpen] = useState(true);
   const [isCompletedTasksOpen, setIsCompletedTasksOpen] = useState(true);
+
+  useEffect(() => {
+    const fetchTodos = async () => {
+      try {
+        const todos = await getTodos();
+        setTodos(todos);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchTodos();
+  }, []);
 
   const activeTodos = todos.filter((todo) => !todo.isDone);
   const completedTodos = todos.filter((todo) => todo.isDone);

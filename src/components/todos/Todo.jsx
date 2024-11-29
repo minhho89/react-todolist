@@ -46,7 +46,7 @@ export const Todo = ({ task, deleteTask, editTask }) => {
 
   const handleSave = (edittedTask) => {
     const updatedTodo = updateTodo(task, {
-      task: edittedTask.task.trim(),
+      task: edittedTask.title.trim(),
       isDone: edittedTask.isDone,
       updatedAt: new Date(),
     });
@@ -69,6 +69,9 @@ export const Todo = ({ task, deleteTask, editTask }) => {
   const handleDetailModalClose = () => {
     setIsDetailModalOpen(false);
   };
+
+  console.log("rendering todo");
+  console.log(task);
 
   return (
     <>
@@ -103,13 +106,13 @@ export const Todo = ({ task, deleteTask, editTask }) => {
             <TodoForm
               initialTask={{
                 id: task.id,
-                task: task.task,
+                task: task.title,
                 isDone: task.isDone,
               }}
               editTodo={handleSave}
             />
           ) : (
-            <div className={task.isDone ? "done" : ""}>{task.task}</div>
+            <div className={task.isDone ? "done" : ""}>{task.title}</div>
           )}
         </div>
         <div className="action-group">
@@ -132,12 +135,12 @@ export const Todo = ({ task, deleteTask, editTask }) => {
         </div>
       </div>
     </motion.li>
-     <TodoDetailsModal 
+     {/* <TodoDetailsModal 
      isOpen={isDetailModalOpen} 
      onClose={handleDetailModalClose}
      todo={task}
      editTodo={editTask}
-     />
+     /> */}
     </>
   );
  
