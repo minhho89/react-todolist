@@ -1,133 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { DndContext, closestCorners } from "@dnd-kit/core";
+import React, { useState } from "react";
 import { arrayMove } from "@dnd-kit/sortable";
-import { TodoForm } from "./TodoForm";
-import { TodoList } from "./TodoList";
-import { EmptyBanner } from "../commons/EmptyBanner";
 import PropTypes from "prop-types";
-import { todoPropTypes, updateTodo } from "../models/Todo";
-import {
-  getTodos,
-  updateTodo as updateTodoAPI,
-  addTodo as addTodoAPI,
-  deleteTodo as deleteTodoAPI,
-} from "../../api/todoService";
-import { AnimatePresence, motion } from "motion/react";
+import { todoPropTypes } from "../models/Todo";
+import { useTodos } from "../../hooks/useTodos";
 import EmptyFinishedImage from "../../assets/img/empty-finished.svg";
 import EmptyTodoImage from "../../assets/img/empty-todo.svg";
-import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { isEqualWithoutFields } from "../../utils/isEqual";
-
-const Section = ({ title, isOpen, toggleSection, children }) => (
-  <>
-    <motion.h2 layout onClick={toggleSection} className="pointer">
-      <div className="accordion">
-        <span>{title}</span>
-        <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} />
-      </div>
-    </motion.h2>
-    {isOpen && children}
-  </>
-);
-
-Section.propTypes = {
-  title: PropTypes.string.isRequired,
-  isOpen: PropTypes.bool.isRequired,
-  toggleSection: PropTypes.func.isRequired,
-  children: PropTypes.node.isRequired,
-};
-
-const TodoSectionContent = ({
-  todos,
-  deleteTodo,
-  editTodo,
-  emptyBannerSrc,
-  emptyBannerMessage,
-}) =>
-  todos.length ? (
-    <TodoList todos={todos} deleteTodo={deleteTodo} editTodo={editTodo} />
-  ) : (
-    <EmptyBanner src={emptyBannerSrc} message={emptyBannerMessage} />
-  );
-
-TodoSectionContent.propTypes = {
-  todos: PropTypes.arrayOf(todoPropTypes).isRequired,
-  deleteTodo: PropTypes.func.isRequired,
-  editTodo: PropTypes.func.isRequired,
-  emptyBannerSrc: PropTypes.string.isRequired,
-  emptyBannerMessage: PropTypes.string.isRequired,
-};
-
-const DraggableTodoList = ({ todos, onDragEnd, children }) => (
-  <DndContext onDragEnd={onDragEnd} collisionDetection={closestCorners}>
-    <AnimatePresence>{children}</AnimatePresence>
-  </DndContext>
-);
-
-DraggableTodoList.propTypes = {
-  todos: PropTypes.arrayOf(todoPropTypes).isRequired,
-  onDragEnd: PropTypes.func.isRequired,
-  children: PropTypes.node.isRequired,
-};
+import { Section } from "./TodoWrapperChildren/Section";
+import { TodoSectionContent } from "./TodoWrapperChildren/TodoSectionContent";
+import { DraggableTodoList } from "./TodoWrapperChildren/DragableTodoList";
+import { TodoForm } from "./TodoForm";
 
 export const TodoWrapper = () => {
-  const [todos, setTodos] = useState([]);
+  const { todos, addTodo, deleteTodo, editTodo, setTodos } = useTodos();
   const [isMyTasksOpen, setIsMyTasksOpen] = useState(true);
   const [isCompletedTasksOpen, setIsCompletedTasksOpen] = useState(true);
-
-  useEffect(() => {
-    const fetchTodos = async () => {
-      try {
-        const todos = await getTodos();
-        setTodos(todos);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchTodos();
-  }, []);
 
   const activeTodos = todos.filter((todo) => !todo.isDone);
   const completedTodos = todos.filter((todo) => todo.isDone);
 
   const handleToggleSelection = (setter) => setter((prev) => !prev);
-
-  const addTodo = async (todo) => {
-    try {
-      await addTodoAPI(todo);
-      setTodos([todo, ...todos]);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const deleteTodo = async (id) => {
-    try {
-      await deleteTodoAPI(id);
-      setTodos(todos.filter((todo) => todo.id !== id));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const editTodo = async (updatedTodo) => {
-    const existingTodo = todos.find((todo) => todo.id === updatedTodo.id);
-    if (isEqualWithoutFields(existingTodo, updatedTodo, ["updatedAt"])) {
-      console.log("No changes detected");
-      return;
-    }
-    try {
-      await updateTodoAPI(updatedTodo.id, updatedTodo);
-      setTodos((prevTodos) =>
-        prevTodos.map((todo) =>
-          todo.id === updatedTodo.id ? updateTodo(todo, updatedTodo) : todo
-        )
-      );
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const handleOnDragEnd = (event) => {
     const { active, over } = event;
