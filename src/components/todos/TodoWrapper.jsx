@@ -6,11 +6,16 @@ import { TodoList } from "./TodoList";
 import { EmptyBanner } from "../commons/EmptyBanner";
 import PropTypes from "prop-types";
 import { todoPropTypes, updateTodo } from "../models/Todo";
-import { getTodos, updateTodo as updateTodoAPI, addTodo as addTodoAPI, deleteTodo as deleteTodoAPI } from "../../api/todoService";
+import {
+  getTodos,
+  updateTodo as updateTodoAPI,
+  addTodo as addTodoAPI,
+  deleteTodo as deleteTodoAPI,
+} from "../../api/todoService";
 import { AnimatePresence, motion } from "motion/react";
 import EmptyFinishedImage from "../../assets/img/empty-finished.svg";
 import EmptyTodoImage from "../../assets/img/empty-todo.svg";
-import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons"
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isEqualWithoutFields } from "../../utils/isEqual";
 
@@ -33,13 +38,18 @@ Section.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-const TodoSectionContent = ({ todos, deleteTodo, editTodo, emptyBannerSrc, emptyBannerMessage }) => (
+const TodoSectionContent = ({
+  todos,
+  deleteTodo,
+  editTodo,
+  emptyBannerSrc,
+  emptyBannerMessage,
+}) =>
   todos.length ? (
     <TodoList todos={todos} deleteTodo={deleteTodo} editTodo={editTodo} />
   ) : (
     <EmptyBanner src={emptyBannerSrc} message={emptyBannerMessage} />
-  )
-);
+  );
 
 TodoSectionContent.propTypes = {
   todos: PropTypes.arrayOf(todoPropTypes).isRequired,
@@ -48,7 +58,6 @@ TodoSectionContent.propTypes = {
   emptyBannerSrc: PropTypes.string.isRequired,
   emptyBannerMessage: PropTypes.string.isRequired,
 };
-
 
 const DraggableTodoList = ({ todos, onDragEnd, children }) => (
   <DndContext onDragEnd={onDragEnd} collisionDetection={closestCorners}>
@@ -82,7 +91,7 @@ export const TodoWrapper = () => {
   const activeTodos = todos.filter((todo) => !todo.isDone);
   const completedTodos = todos.filter((todo) => todo.isDone);
 
-  const handleToggleSelection = (setter) =>  setter((prev) => !prev);
+  const handleToggleSelection = (setter) => setter((prev) => !prev);
 
   const addTodo = async (todo) => {
     try {
@@ -91,7 +100,6 @@ export const TodoWrapper = () => {
     } catch (error) {
       console.error(error);
     }
-    
   };
 
   const deleteTodo = async (id) => {
@@ -101,7 +109,6 @@ export const TodoWrapper = () => {
     } catch (error) {
       console.error(error);
     }
-    
   };
 
   const editTodo = async (updatedTodo) => {
@@ -109,7 +116,7 @@ export const TodoWrapper = () => {
     if (isEqualWithoutFields(existingTodo, updatedTodo, ["updatedAt"])) {
       console.log("No changes detected");
       return;
-    };
+    }
     try {
       await updateTodoAPI(updatedTodo.id, updatedTodo);
       setTodos((prevTodos) =>
@@ -152,7 +159,7 @@ export const TodoWrapper = () => {
           />
         </DraggableTodoList>
       </Section>
-      
+
       <hr />
       <Section
         title="Completed Tasks"
