@@ -70,9 +70,6 @@ export const Todo = ({ task, deleteTask, editTask }) => {
     setIsDetailModalOpen(false);
   };
 
-  console.log("rendering todo");
-  console.log(task);
-
   return (
     <>
     
@@ -135,12 +132,12 @@ export const Todo = ({ task, deleteTask, editTask }) => {
         </div>
       </div>
     </motion.li>
-     {/* <TodoDetailsModal 
+     <TodoDetailsModal 
      isOpen={isDetailModalOpen} 
      onClose={handleDetailModalClose}
      todo={task}
      editTodo={editTask}
-     /> */}
+     />
     </>
   );
  

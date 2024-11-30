@@ -11,16 +11,16 @@ export const TodoDetailsModal = ({ isOpen, onClose, todo, editTodo }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if(name === 'dueDate') {
-        setTodoDetails({
-            ...todoDetails,
-            [name]: new Date(value),
-            });
+    if (name === 'dueDate') {
+      setTodoDetails({
+        ...todoDetails,
+        [name]: new Date(value),
+      });
     } else {
-        setTodoDetails({
-            ...todoDetails,
-            [name]: value,
-          });
+      setTodoDetails({
+        ...todoDetails,
+        [name]: value,
+      });
     }
   };
 
@@ -33,11 +33,11 @@ export const TodoDetailsModal = ({ isOpen, onClose, todo, editTodo }) => {
   };
 
   const handleSave = () => {
-    setTodoDetails(prev => ({...prev, updatedAt: new Date()}));
+    setTodoDetails((prev) => ({ ...prev, updatedAt: new Date() }));
     editTodo(todoDetails);
     onClose();
-  }
-  
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -47,56 +47,87 @@ export const TodoDetailsModal = ({ isOpen, onClose, todo, editTodo }) => {
     >
       <h2>Todo Details Modal</h2>
       <div className="modal-content">
-        <label>
-          Task:
+      <div className="form-group-row"> 
+      <div className="form-group">
+          <label>Task:</label>
           <input
             type="text"
-            name="task"
-            value={todoDetails.task}
+            name="title"
+            value={todoDetails.title}
             onChange={handleInputChange}
           />
-        </label>
-        <label>
-            Status:
-        </label>
-        <input
+        </div>
+
+        <div className="form-group">
+          <label>Done:</label>
+          <input
             name="isDone"
             type="checkbox"
             checked={todoDetails.isDone}
             onChange={handleCheckboxChange}
-            />
-        <label>Priority:</label>
-        <select
-          name="priority"
-          value={todoDetails.priority}
-          onChange={handleInputChange}
-        >
-          <option value="low">Low</option>
-          <option value="normal">Normal</option>
-          <option value="high">High</option>
-        </select>
-        <label>Due Date:</label>
-        <input
-          type="date"
-          name="dueDate"
-          value={todoDetails.dueDate ? todoDetails.dueDate.toISOString().split('T')[0] : ''
-          }
-          onChange={handleInputChange}  />
-        <label>Created At:</label>
-        <input
-          type="text"
-          name="createdAt"
-          value={todoDetails.createdAt.toISOString().split('T')[0]}
-          readOnly /> 
-        <label>Updated At:</label>
-        <input
-          type="text"
-          name="updateAt"
-          value={todoDetails.updatedAt.toISOString().split('T')[0]}
-          readOnly />
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Priority:</label>
+          <select
+            name="priority"
+            value={todoDetails.priority}
+            onChange={handleInputChange}
+          >
+            <option value="low">Low</option>
+            <option value="normal">Normal</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+      </div>
+        
+
+        <div className="form-group full-width">
+          <label>Description:</label>
+          <textarea
+            name="description"
+            value={todoDetails.description}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Due Date:</label>
+          <input
+            type="date"
+            name="dueDate"
+            value={todoDetails.dueDate ? new Date(todoDetails.dueDate).toISOString().split('T')[0] : ''}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <div className="form-group-row">
+        <div className="form-group">
+          <label>Created At:</label>
+          <input
+            type="text"
+            name="createdAt"
+            value={todoDetails.createdAt ? new Date(todoDetails.createdAt).toISOString().split('T')[0] : ''}
+            readOnly
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Updated At:</label>
+          <input
+            type="text"
+            name="updatedAt"
+            value={todoDetails.updatedAt ? new Date(todoDetails.updatedAt).toISOString().split('T')[0] : ''}
+            readOnly
+          />
+        </div>
+        </div>
+
+        
 
         <div className="modal-actions">
-            <button onClick={handleSave}>Save</button>
+          <button onClick={handleSave}>Save</button>
           <button onClick={handleClose}>Close</button>
         </div>
       </div>

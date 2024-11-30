@@ -1,85 +1,116 @@
 /* TodoDetailModal.css */
 .todo-detail-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
-  
-  .todo-detail-modal {
-       background: #f9f9f9;
-      ;
-      padding: 20px;
-      width: 90%;
-      max-width: 500px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      position: relative;
-      z-index: 1001;
-      outline: none;
-    }
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
 
-    .todo-detail-modal h2 {
-        font-size: 1.5rem;
-        margin-bottom: 20px;
-        color: #333;
-        text-align: center;
-    }
-  
-  .modal-content label {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 15px;
-    font-size: 1rem;
-    color: #333;
-  }
-  
-  .modal-content input[type="text"],
-  .modal-content input[type="date"],
-  .modal-content select {
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-  }
-  
-  .modal-content input[type="checkbox"] {
-    margin-top: 10px;
-    transform: scale(1.2);
-  }
-  
-  .modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-  }
-  
-  .modal-actions button {
-    padding: 10px 20px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .modal-actions button:first-child {
-    background-color: #4caf50;
-    color: #ffffff;
-  }
-  
-  .modal-actions button:last-child {
-    background-color: #f44336;
-    color: #ffffff;
-  }
-  
-  .modal-actions button:hover {
-    opacity: 0.9;
-  }
-  
+.todo-detail-modal {
+  background: #f9f9f9;
+  padding: 20px;
+  width: 90%;
+  max-width: 700px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 1001;
+  outline: none;
+  overflow: hidden;
+}
+
+.todo-detail-modal h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+}
+
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.form-group-row {
+  display: grid; /* Changed to grid layout to improve alignment */
+  grid-template-columns: 2fr 1fr 1fr; /* Assign appropriate column widths for Task, Status, Priority */
+  gap: 5px; /* Added gap to improve spacing between fields */
+  align-items: center;
+}
+
+.full-width {
+  grid-column: span 2; /* Make the element span across two columns */
+}
+
+.modal-content {
+  gap: 20px; /* Added gap to improve spacing between fields */
+}
+
+.modal-content label {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  font-size: 1rem;
+  color: #333;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="date"],
+.modal-content select {
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.modal-content input[type="checkbox"] {
+  margin-top: 10px;
+  transform: scale(1.2);
+}
+
+.modal-content textarea {
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  resize: none; /* Disabled resizing to prevent textarea from exceeding modal boundaries */
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  grid-column: span 2; /* Make the element span across two columns */
+}
+
+.modal-actions button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal-actions button:first-child {
+  background-color: #4caf50;
+  color: #ffffff;
+}
+
+.modal-actions button:last-child {
+  background-color: #f44336;
+  color: #ffffff;
+}
+
+.modal-actions button:hover {
+  opacity: 0.9;
+}
