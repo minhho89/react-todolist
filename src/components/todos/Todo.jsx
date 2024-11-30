@@ -35,7 +35,7 @@ export const Todo = ({ task, deleteTask, editTask }) => {
   const hangleToggleFinish = (e) => {
     const updatedTodo = updateTodo(task, {
       isDone: e.target.checked,
-      // updateAt: new Date(),
+      updateAt: new Date(),
     });
     editTask(updatedTodo);
   };
