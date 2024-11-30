@@ -6,7 +6,7 @@ import { TodoList } from "./TodoList";
 import { EmptyBanner } from "../commons/EmptyBanner";
 import PropTypes from "prop-types";
 import { todoPropTypes, updateTodo } from "../models/Todo";
-import { getTodos, updateTodo as updateTodoAPI, addTodo as addTodoAPI } from "../../api/todoService";
+import { getTodos, updateTodo as updateTodoAPI, addTodo as addTodoAPI, deleteTodo as deleteTodoAPI } from "../../api/todoService";
 import { AnimatePresence, motion } from "motion/react";
 import EmptyFinishedImage from "../../assets/img/empty-finished.svg";
 import EmptyTodoImage from "../../assets/img/empty-todo.svg";
@@ -94,8 +94,14 @@ export const TodoWrapper = () => {
     
   };
 
-  const deleteTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+  const deleteTodo = async (id) => {
+    try {
+      await deleteTodoAPI(id);
+      setTodos(todos.filter((todo) => todo.id !== id));
+    } catch (error) {
+      console.error(error);
+    }
+    
   };
 
   const editTodo = async (updatedTodo) => {
