@@ -9,6 +9,7 @@ import { TodoForm } from "./TodoForm";
 import { TodoDetailsModal } from "./TodoDetailsModal";
 import { todoPropTypes, updateTodo } from "../models/Todo";
 import { motion } from "framer-motion";
+import { isEqualWithoutFields } from "../../utils/isEqual";
 
 export const Todo = ({ task, deleteTask, editTask }) => {
   const [editMode, setEditMode] = useState(false);
@@ -23,7 +24,7 @@ export const Todo = ({ task, deleteTask, editTask }) => {
     });
 
   const style = {
-    transition, 
+    transition,
     transform: CSS.Transform.toString(transform),
   };
 
@@ -32,7 +33,7 @@ export const Todo = ({ task, deleteTask, editTask }) => {
   };
 
   const hangleToggleFinish = (e) => {
-    const updatedTodo = updateTodo(task, { 
+    const updatedTodo = updateTodo(task, {
       isDone: e.target.checked,
       // updateAt: new Date(),
     });
@@ -45,12 +46,19 @@ export const Todo = ({ task, deleteTask, editTask }) => {
   };
 
   const handleSave = (edittedTask) => {
+    if (isEqualWithoutFields(edittedTask, task, ["updateAt"])) {
+      setEditMode(false);
+      return;
+    }
     const updatedTodo = updateTodo(task, {
-      task: edittedTask.title.trim(),
+      title: edittedTask.task.trim(),
       isDone: edittedTask.isDone,
-      updatedAt: new Date(),
+    });
+    const updatedTodoWithDate = updateTodo(updatedTodo, {
+      updateAt: new Date(),
     });
     editTask(updatedTodo);
+
     setEditMode(false);
   };
 
@@ -72,75 +80,76 @@ export const Todo = ({ task, deleteTask, editTask }) => {
 
   return (
     <>
-    
-    <motion.li
-      key={task.id}
-      initial={{ opacity: 0, y: task.isDone ? -20 : 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 20 }}
-      transition={{ duration: 0.3 }}
-    >
-      <div
-        ref={setNodeRef}
-        {...attributes}
-        style={style}
-        className="todo"
-        onClick={handleClick}
+      <motion.li
+        key={task.id}
+        initial={{ opacity: 0, y: task.isDone ? -20 : 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.3 }}
       >
-        <span {...listeners} className="drag-handle">
-          ☰
-        </span>
-        <div className="task-group">
-          <input
-            type="checkbox"
-            className="checkbox"
-            id={`task-${task.id}`}
-            onChange={hangleToggleFinish}
-            checked={task.isDone}
-          />
-          <label htmlFor={`task-${task.id}`} className="checkbox-label"></label>
-          {editMode ? (
-            <TodoForm
-              initialTask={{
-                id: task.id,
-                task: task.title,
-                isDone: task.isDone,
-              }}
-              editTodo={handleSave}
+        <div
+          ref={setNodeRef}
+          {...attributes}
+          style={style}
+          className="todo"
+          onClick={handleClick}
+        >
+          <span {...listeners} className="drag-handle">
+            ☰
+          </span>
+          <div className="task-group">
+            <input
+              type="checkbox"
+              className="checkbox"
+              id={`task-${task.id}`}
+              onChange={hangleToggleFinish}
+              checked={task.isDone}
             />
-          ) : (
-            <div className={task.isDone ? "done" : ""}>{task.title}</div>
-          )}
-        </div>
-        <div className="action-group">
-          {editMode ? (
-            <></>
-          ) : (
+            <label
+              htmlFor={`task-${task.id}`}
+              className="checkbox-label"
+            ></label>
+            {editMode ? (
+              <TodoForm
+                initialTask={{
+                  id: task.id,
+                  task: task.title,
+                  isDone: task.isDone,
+                }}
+                editTodo={handleSave}
+              />
+            ) : (
+              <div className={task.isDone ? "done" : ""}>{task.title}</div>
+            )}
+          </div>
+          <div className="action-group">
+            {editMode ? (
+              <></>
+            ) : (
+              <FontAwesomeIcon
+                className="icon edit-icon"
+                data-no-dnd
+                icon={faEdit}
+                onClick={handleEdit}
+              />
+            )}
             <FontAwesomeIcon
-              className="icon edit-icon"
+              className="icon trash-icon"
+              icon={faTrash}
               data-no-dnd
-              icon={faEdit}
-              onClick={handleEdit}
+              onClick={handleDelete}
             />
-          )}
-          <FontAwesomeIcon
-            className="icon trash-icon"
-            icon={faTrash}
-            data-no-dnd
-            onClick={handleDelete}
-          />
+          </div>
         </div>
-      </div>
-    </motion.li>
-     <TodoDetailsModal 
-     isOpen={isDetailModalOpen} 
-     onClose={handleDetailModalClose}
-     todo={task}
-     editTodo={editTask}
-     />
+      </motion.li>
+      <TodoDetailsModal
+        isOpen={isDetailModalOpen}
+        onClose={handleDetailModalClose}
+        todo={task}
+        editTodo={editTask}
+      />
     </>
   );
- 
 };
 
 Todo.propTypes = {

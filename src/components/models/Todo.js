@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import { PropTypes } from 'prop-types';
 
-export const createTodo = (task, priority = 'normal', dueDate = null) => ({
+export const createTodo = (title, priority = 'normal', dueDate = null) => ({
   id: uuidv4(),
-  task,
+  title,
   isDone: false,
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -19,7 +19,7 @@ export const updateTodo = (todo, updates) => ({
 
 export const todoPropTypes = {
     id: PropTypes.string.isRequired,
-    task: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
     isDone: PropTypes.bool.isRequired,
     createdAt: PropTypes.instanceOf(Date).isRequired,
     updatedAt: PropTypes.instanceOf(Date).isRequired,

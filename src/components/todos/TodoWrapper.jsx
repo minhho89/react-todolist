@@ -6,12 +6,13 @@ import { TodoList } from "./TodoList";
 import { EmptyBanner } from "../commons/EmptyBanner";
 import PropTypes from "prop-types";
 import { todoPropTypes, updateTodo } from "../models/Todo";
-import { getTodos } from "../../api/todoService";
+import { getTodos, updateTodo as updateTodoAPI, addTodo as addTodoAPI } from "../../api/todoService";
 import { AnimatePresence, motion } from "motion/react";
 import EmptyFinishedImage from "../../assets/img/empty-finished.svg";
 import EmptyTodoImage from "../../assets/img/empty-todo.svg";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { isEqualWithoutFields } from "../../utils/isEqual";
 
 const Section = ({ title, isOpen, toggleSection, children }) => (
   <>
@@ -83,20 +84,36 @@ export const TodoWrapper = () => {
 
   const handleToggleSelection = (setter) =>  setter((prev) => !prev);
 
-  const addTodo = (todo) => {
-    setTodos([todo, ...todos]);
+  const addTodo = async (todo) => {
+    try {
+      await addTodoAPI(todo);
+      setTodos([todo, ...todos]);
+    } catch (error) {
+      console.error(error);
+    }
+    
   };
 
   const deleteTodo = (id) => {
     setTodos(todos.filter((todo) => todo.id !== id));
   };
 
-  const editTodo = (updatedTodo) => {
-    setTodos((prevTodos) =>
-      prevTodos.map((todo) =>
-        todo.id === updatedTodo.id ? updateTodo(todo, updatedTodo) : todo
-      )
-    );
+  const editTodo = async (updatedTodo) => {
+    const existingTodo = todos.find((todo) => todo.id === updatedTodo.id);
+    if (isEqualWithoutFields(existingTodo, updatedTodo, ["updatedAt"])) {
+      console.log("No changes detected");
+      return;
+    };
+    try {
+      await updateTodoAPI(updatedTodo.id, updatedTodo);
+      setTodos((prevTodos) =>
+        prevTodos.map((todo) =>
+          todo.id === updatedTodo.id ? updateTodo(todo, updatedTodo) : todo
+        )
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleOnDragEnd = (event) => {

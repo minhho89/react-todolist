@@ -16,7 +16,7 @@ export const TodoForm = ({ addTodo, editTodo, initialTask }) => {
       return;
     }
     if (initialTask) {
-      const updatedTodo = updateTodo( todo, {task: inputTask.trim()});
+      const updatedTodo = updateTodo( todo, {title: inputTask.trim()});
       editTodo?.(updatedTodo);
     } else {
       const newTodo = createTodo(inputTask.trim());
