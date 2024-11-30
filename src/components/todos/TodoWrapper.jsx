@@ -9,11 +9,47 @@ import { Section } from "./TodoWrapperChildren/Section";
 import { TodoSectionContent } from "./TodoWrapperChildren/TodoSectionContent";
 import { DraggableTodoList } from "./TodoWrapperChildren/DragableTodoList";
 import { TodoForm } from "./TodoForm";
+import ReactPaginate from "react-paginate";
+import "../commons/Pagination.css";
 
 export const TodoWrapper = () => {
-  const { activeTodos , completedTodos, loading, error, addTodo, deleteTodo, editTodo, setActiveTodos, setCompletedTodos } = useTodos();
+  const {
+    activeTodos,
+    completedTodos,
+    loading,
+    error,
+    addTodo,
+    deleteTodo,
+    editTodo,
+    setActiveTodos,
+    setCompletedTodos,
+  } = useTodos();
   const [isMyTasksOpen, setIsMyTasksOpen] = useState(true);
   const [isCompletedTasksOpen, setIsCompletedTasksOpen] = useState(true);
+  // paginations
+  const [currentPageActive, setCurrentPageActive] = useState(1);
+  const [currentPageCompleted, setCurrentPageCompleted] = useState(1);
+  const todosPerpage = 10;
+
+  const offsetActive = currentPageActive * todosPerpage;
+  const currentActiveTodos = activeTodos.slice(offsetActive, offsetActive + todosPerpage);
+
+  const offsetCompleted = currentPageCompleted * todosPerpage;
+  const currentCompletedTodos = completedTodos.slice(offsetCompleted, offsetCompleted + todosPerpage);
+
+  const handlePageClickActive = (e) => {
+    setCurrentPageActive(Number(e.selected));
+    
+  };
+
+  const handlePageClickCompleted = (e) => {
+    setCurrentPageCompleted(Number(e.selected));
+  };
+
+  const resetCurrentPage = () => {
+    setCurrentPageActive(1);
+    setCurrentPageCompleted(1);
+  };
 
   const handleToggleSelection = (setter) => setter((prev) => !prev);
 
@@ -23,15 +59,25 @@ export const TodoWrapper = () => {
     if (!over || active.id === over.id) return;
 
     if (active.id !== over.id) {
-      
-      // setTodos(arrayMove(todos, oldIndex, newIndex));
-      const activeTodoOldIndex = activeTodos.findIndex((todo) => todo.id === active.id);
-      const activeTodoNewIndex = activeTodos.findIndex((todo) => todo.id === over.id);
-      setActiveTodos(arrayMove(activeTodos, activeTodoOldIndex, activeTodoNewIndex));
+      const activeTodoOldIndex = activeTodos.findIndex(
+        (todo) => todo.id === active.id
+      );
+      const activeTodoNewIndex = activeTodos.findIndex(
+        (todo) => todo.id === over.id
+      );
+      setActiveTodos(
+        arrayMove(activeTodos, activeTodoOldIndex, activeTodoNewIndex)
+      );
 
-      const completedTodoOldIndex = completedTodos.findIndex((todo) => todo.id === active.id);
-      const completedTodoNewIndex = completedTodos.findIndex((todo) => todo.id === over.id);
-      setCompletedTodos(arrayMove(completedTodos, completedTodoOldIndex, completedTodoNewIndex));
+      const completedTodoOldIndex = completedTodos.findIndex(
+        (todo) => todo.id === active.id
+      );
+      const completedTodoNewIndex = completedTodos.findIndex(
+        (todo) => todo.id === over.id
+      );
+      setCompletedTodos(
+        arrayMove(completedTodos, completedTodoOldIndex, completedTodoNewIndex)
+      );
     }
   };
 
@@ -46,15 +92,23 @@ export const TodoWrapper = () => {
         isOpen={isMyTasksOpen}
         toggleSection={() => handleToggleSelection(setIsMyTasksOpen)}
       >
-        <DraggableTodoList todos={activeTodos} onDragEnd={handleOnDragEnd}>
+        <DraggableTodoList todos={currentActiveTodos} onDragEnd={handleOnDragEnd}>
           <TodoSectionContent
-            todos={activeTodos}
+            todos={currentActiveTodos}
             deleteTodo={deleteTodo}
             editTodo={editTodo}
             emptyBannerSrc={EmptyTodoImage}
             emptyBannerMessage="Add more tasks!"
           />
         </DraggableTodoList>
+        <ReactPaginate
+        previousLabel={"←"}
+        nextLabel={"→"}
+        pageCount={Math.ceil(activeTodos.length / todosPerpage)}
+        onPageActive={handlePageClickActive}
+        containerClassName={"pagination"}
+        activeClassName={"active"}
+        />
       </Section>
 
       <hr />
@@ -63,15 +117,24 @@ export const TodoWrapper = () => {
         isOpen={isCompletedTasksOpen}
         toggleSection={() => handleToggleSelection(setIsCompletedTasksOpen)}
       >
-        <DraggableTodoList todos={completedTodos} onDragEnd={handleOnDragEnd}>
+        <DraggableTodoList todos={currentCompletedTodos} onDragEnd={handleOnDragEnd}>
           <TodoSectionContent
-            todos={completedTodos}
+            todos={currentCompletedTodos}
             deleteTodo={deleteTodo}
             editTodo={editTodo}
             emptyBannerSrc={EmptyFinishedImage}
             emptyBannerMessage="No completed tasks!"
           />
         </DraggableTodoList>
+
+         <ReactPaginate
+        previousLabel={"←"}
+        nextLabel={"→"}
+        pageCount={Math.ceil(completedTodos.length / todosPerpage)}
+        onPageChange={handlePageClickCompleted}
+        containerClassName={"pagination"}
+        activeClassName={"active"}
+      />
       </Section>
     </section>
   );
