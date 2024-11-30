@@ -11,7 +11,7 @@ export const DraggableTodoList = ({ todos, onDragEnd, children }) => (
 );
 
 DraggableTodoList.propTypes = {
-  todos: PropTypes.arrayOf(todoPropTypes).isRequired,
+  todos: PropTypes.arrayOf(todoPropTypes),
   onDragEnd: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,
 };

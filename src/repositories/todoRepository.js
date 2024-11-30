@@ -1,9 +1,14 @@
-import api from "./axios";
+import api from "../api/axios";
 
 const getTodos = async () => {
     const response = await api.get("/tasks");
     return response.data;
 };
+
+const getTodosByStatus = async (isDone) => {
+    const response = await api.get(`/tasks/status/${isDone}`);
+    return response.data;
+}
 
 const addTodo = async (todo) => {
     const response = await api.post("/tasks", todo);
@@ -25,4 +30,4 @@ const getTodoById = async (id) => {
     return response.data;
 }
 
-export { getTodos, addTodo, updateTodo, deleteTodo, getTodoById };
+export { getTodos, addTodo, updateTodo, deleteTodo, getTodoById, getTodosByStatus };

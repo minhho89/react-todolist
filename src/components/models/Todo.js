@@ -17,7 +17,7 @@ export const updateTodo = (todo, updates) => ({
   updatedAt: new Date(),
 });
 
-export const todoPropTypes = {
+export const todoPropTypes = PropTypes.shape({
     id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     isDone: PropTypes.bool.isRequired,
@@ -25,7 +25,7 @@ export const todoPropTypes = {
     updatedAt: PropTypes.instanceOf(Date).isRequired,
     priority: PropTypes.oneOf(['low', 'normal', 'high']).isRequired,
     dueDate: PropTypes.instanceOf(Date),
-    };
+    });
 
 // Generate some dummy todo items
 export const dummyTodos = [

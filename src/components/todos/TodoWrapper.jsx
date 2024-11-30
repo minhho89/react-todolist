@@ -11,12 +11,9 @@ import { DraggableTodoList } from "./TodoWrapperChildren/DragableTodoList";
 import { TodoForm } from "./TodoForm";
 
 export const TodoWrapper = () => {
-  const { todos, addTodo, deleteTodo, editTodo, setTodos } = useTodos();
+  const { activeTodos , completedTodos, loading, error, addTodo, deleteTodo, editTodo, setActiveTodos, setCompletedTodos } = useTodos();
   const [isMyTasksOpen, setIsMyTasksOpen] = useState(true);
   const [isCompletedTasksOpen, setIsCompletedTasksOpen] = useState(true);
-
-  const activeTodos = todos.filter((todo) => !todo.isDone);
-  const completedTodos = todos.filter((todo) => todo.isDone);
 
   const handleToggleSelection = (setter) => setter((prev) => !prev);
 
@@ -26,11 +23,20 @@ export const TodoWrapper = () => {
     if (!over || active.id === over.id) return;
 
     if (active.id !== over.id) {
-      const oldIndex = todos.findIndex((todo) => todo.id === active.id);
-      const newIndex = todos.findIndex((todo) => todo.id === over.id);
-      setTodos(arrayMove(todos, oldIndex, newIndex));
+      
+      // setTodos(arrayMove(todos, oldIndex, newIndex));
+      const activeTodoOldIndex = activeTodos.findIndex((todo) => todo.id === active.id);
+      const activeTodoNewIndex = activeTodos.findIndex((todo) => todo.id === over.id);
+      setActiveTodos(arrayMove(activeTodos, activeTodoOldIndex, activeTodoNewIndex));
+
+      const completedTodoOldIndex = completedTodos.findIndex((todo) => todo.id === active.id);
+      const completedTodoNewIndex = completedTodos.findIndex((todo) => todo.id === over.id);
+      setCompletedTodos(arrayMove(completedTodos, completedTodoOldIndex, completedTodoNewIndex));
     }
   };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <section>
