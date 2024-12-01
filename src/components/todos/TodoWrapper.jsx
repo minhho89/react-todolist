@@ -14,6 +14,7 @@ import "../commons/Pagination.css";
 
 export const TodoWrapper = () => {
   const {
+    fetchTodosByPage,
     activeTodos,
     completedTodos,
     loading,
@@ -23,32 +24,22 @@ export const TodoWrapper = () => {
     editTodo,
     setActiveTodos,
     setCompletedTodos,
+    setCurrentPageActive,
+    setCurrentPageCompleted,
+    todosPerPage,
   } = useTodos();
   const [isMyTasksOpen, setIsMyTasksOpen] = useState(true);
   const [isCompletedTasksOpen, setIsCompletedTasksOpen] = useState(true);
-  // paginations
-  const [currentPageActive, setCurrentPageActive] = useState(1);
-  const [currentPageCompleted, setCurrentPageCompleted] = useState(1);
-  const todosPerpage = 10;
 
-  const offsetActive = currentPageActive * todosPerpage;
-  const currentActiveTodos = activeTodos.slice(offsetActive, offsetActive + todosPerpage);
-
-  const offsetCompleted = currentPageCompleted * todosPerpage;
-  const currentCompletedTodos = completedTodos.slice(offsetCompleted, offsetCompleted + todosPerpage);
-
-  const handlePageClickActive = (e) => {
-    setCurrentPageActive(Number(e.selected));
-    
+  const handlePageClickActive = (event, status) => {
+    console.log("selected page | handlePageClickActive", event.selected);
+    //setCurrentPageActive(Number(event.selected));
   };
 
-  const handlePageClickCompleted = (e) => {
-    setCurrentPageCompleted(Number(e.selected));
-  };
-
-  const resetCurrentPage = () => {
-    setCurrentPageActive(1);
-    setCurrentPageCompleted(1);
+  const handlePageClickCompleted = (event, status) => {
+    console.log(`selected page with isDone as ${status} | handlePageClickCompleted`, event.selected);
+    fetchTodosByPage(status === 'completed' ? true : false, event.selected);
+    //setCurrentPageCompleted(Number(event.selected));
   };
 
   const handleToggleSelection = (setter) => setter((prev) => !prev);
@@ -92,9 +83,9 @@ export const TodoWrapper = () => {
         isOpen={isMyTasksOpen}
         toggleSection={() => handleToggleSelection(setIsMyTasksOpen)}
       >
-        <DraggableTodoList todos={currentActiveTodos} onDragEnd={handleOnDragEnd}>
+        <DraggableTodoList todos={activeTodos} onDragEnd={handleOnDragEnd}>
           <TodoSectionContent
-            todos={currentActiveTodos}
+            todos={activeTodos}
             deleteTodo={deleteTodo}
             editTodo={editTodo}
             emptyBannerSrc={EmptyTodoImage}
@@ -102,12 +93,14 @@ export const TodoWrapper = () => {
           />
         </DraggableTodoList>
         <ReactPaginate
-        previousLabel={"←"}
-        nextLabel={"→"}
-        pageCount={Math.ceil(activeTodos.length / todosPerpage)}
-        onPageActive={handlePageClickActive}
-        containerClassName={"pagination"}
-        activeClassName={"active"}
+          key="active"
+          previousLabel={"←"}
+          nextLabel={"→"}
+          pageCount={Math.ceil(100 / todosPerPage)} // TODO: impl. count api to get total count
+          onPageChange={(event) => handlePageClickCompleted(event, 'active')}
+          onPageActive={(event) => handlePageClickCompleted(event,'active')}
+          containerClassName={"pagination"}
+          activeClassName={"active"}
         />
       </Section>
 
@@ -117,9 +110,9 @@ export const TodoWrapper = () => {
         isOpen={isCompletedTasksOpen}
         toggleSection={() => handleToggleSelection(setIsCompletedTasksOpen)}
       >
-        <DraggableTodoList todos={currentCompletedTodos} onDragEnd={handleOnDragEnd}>
+        <DraggableTodoList todos={completedTodos} onDragEnd={handleOnDragEnd}>
           <TodoSectionContent
-            todos={currentCompletedTodos}
+            todos={completedTodos}
             deleteTodo={deleteTodo}
             editTodo={editTodo}
             emptyBannerSrc={EmptyFinishedImage}
@@ -127,14 +120,16 @@ export const TodoWrapper = () => {
           />
         </DraggableTodoList>
 
-         <ReactPaginate
-        previousLabel={"←"}
-        nextLabel={"→"}
-        pageCount={Math.ceil(completedTodos.length / todosPerpage)}
-        onPageChange={handlePageClickCompleted}
-        containerClassName={"pagination"}
-        activeClassName={"active"}
-      />
+        <ReactPaginate
+          key="completed"
+          previousLabel={"←"}
+          nextLabel={"→"}
+          pageCount={Math.ceil(100 / todosPerPage)} // TODO: impl. count api to get total count
+          onPageChange={(event) => handlePageClickCompleted(event,'completed')}
+          onPageActive={(event) => handlePageClickActive(event,'completed')}
+          containerClassName={"pagination"}
+          activeClassName={"active"}
+        />
       </Section>
     </section>
   );

@@ -5,8 +5,13 @@ const getTodos = async () => {
     return response.data;
 };
 
-const getTodosByStatus = async (isDone) => {
-    const response = await api.get(`/tasks/status/${isDone}`);
+const getTodosByStatus = async (isDone, todosPerPage, page) => {
+    const response = await api.get(`/tasks/status/${isDone}`, {
+        params: {
+            limit: todosPerPage,
+            page: page
+        }
+    });
     return response.data;
 }
 

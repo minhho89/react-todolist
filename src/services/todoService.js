@@ -4,8 +4,8 @@ export const getTodos = async () => {
     return await TodoRepo.getTodos();
 }
 
-export const getTodosByStatus = async (isDone) => {
-    return await TodoRepo.getTodosByStatus(isDone);
+export const getTodosByStatus = async (isDone, todosPerPage, page) => {
+    return await TodoRepo.getTodosByStatus(isDone, todosPerPage, page);
 }
 
 export const addTodo = async (todo) => {
