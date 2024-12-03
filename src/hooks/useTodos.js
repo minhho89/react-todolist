@@ -171,8 +171,6 @@ export const useTodos = () => {
     setCurrentPageActive,
     currentPageCompleted,
     setCurrentPageCompleted,
-    currentPageActive,
-    currentPageCompleted,
     todosPerPage,
     totalActiveTodos,
     totalCompletedTodos,
