@@ -35,7 +35,7 @@ export const Todo = ({ task, deleteTask, editTask }) => {
   const hangleToggleFinish = (e) => {
     const updatedTodo = updateTodo(task, {
       isDone: e.target.checked,
-      updateAt: new Date(),
+      updatedAt: new Date(),
     });
     editTask(updatedTodo);
   };
@@ -46,18 +46,19 @@ export const Todo = ({ task, deleteTask, editTask }) => {
   };
 
   const handleSave = (edittedTask) => {
-    if (isEqualWithoutFields(edittedTask, task, ["updateAt"])) {
+    if (isEqualWithoutFields(edittedTask, task, ["updatedAt"])) {
+      console.log("No changes detected");
       setEditMode(false);
       return;
     }
     const updatedTodo = updateTodo(task, {
-      title: edittedTask.task.trim(),
+      title: edittedTask.title.trim(),
       isDone: edittedTask.isDone,
     });
     const updatedTodoWithDate = updateTodo(updatedTodo, {
-      updateAt: new Date(),
+      updatedAt: new Date(),
     });
-    editTask(updatedTodo);
+    editTask(updatedTodoWithDate);
 
     setEditMode(false);
   };
@@ -113,7 +114,7 @@ export const Todo = ({ task, deleteTask, editTask }) => {
               <TodoForm
                 initialTask={{
                   id: task.id,
-                  task: task.title,
+                  title: task.title,
                   isDone: task.isDone,
                 }}
                 editTodo={handleSave}

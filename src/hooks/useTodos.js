@@ -103,7 +103,8 @@ export const useTodos = () => {
     const existingTodo =
       activeTodos.find((todo) => todo.id === updatedTodo.id) ||
       completedTodos.find((todo) => todo.id === updatedTodo.id);
-
+      // Update the updatedAt field to the date object before comparing
+      updatedTodo.updatedAt = Date(updatedTodo.updatedAt);
     if (isEqualWithoutFields(existingTodo, updatedTodo, ["updatedAt"])) {
       console.log("No changes detected");
       return;

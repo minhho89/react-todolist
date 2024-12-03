@@ -6,9 +6,8 @@ import PropTypes from "prop-types";
 
 
 export const TodoForm = ({ addTodo, editTodo, initialTask }) => {
-  const [todo, setTodo] = useState(initialTask ? initialTask : "");
+  const [todo, setTodo] = useState(initialTask || "");
   const [error, setError] = useState(null);
-
 
   const handleOnFormSubmit = (inputTask) => {
     if (inputTask.trim() === "") {

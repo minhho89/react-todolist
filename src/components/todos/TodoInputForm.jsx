@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 
 export const TodoInputForm = ({ initialTask,isEdit, handleOnFormSubmit }) => {
-    const [ task, setTask ] = useState(initialTask ? initialTask.task : "");
+    const [ task, setTask ] = useState(initialTask ? initialTask.title : "");
     const [ prevTask, setPrevTask ] = useState(task);
 
     const inputRef = useRef(null);
@@ -47,7 +47,7 @@ TodoInputForm.propTypes = {
     handleOnFormSubmit: PropTypes.func.isRequired,
     initialTask: PropTypes.shape({
         id: PropTypes.string,
-        task: PropTypes.string,
+        title: PropTypes.string,
         isDone: PropTypes.bool,
     }),
     isEdit: PropTypes.bool,

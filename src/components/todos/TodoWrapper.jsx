@@ -39,13 +39,11 @@ export const TodoWrapper = () => {
   const [isCompletedTasksOpen, setIsCompletedTasksOpen] = useState(true);
 
   const handlePageClickActive = (event) => {
-    console.log("selected page | handlePageClickActive", event.selected);
     setCurrentPageActive(event.selected);
     fetchTodosByPage(false, event.selected);
   };
 
   const handlePageClickCompleted = (event, status) => {
-    console.log(`selected page with isDone as ${status} | handlePageClickCompleted`, event.selected);
     setCurrentPageCompleted(event.selected);
     fetchTodosByPage(true, event.selected);
   };
