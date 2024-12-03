@@ -4,6 +4,7 @@ import {
   addTodo as addTodoAPI,
   deleteTodo as deleteTodoAPI,
   getTodosByStatus as getTodosByStatusAPI,
+  countTaskByStatus as countTaskByStatusAPI,
 } from "../services/todoService";
 import { isEqualWithoutFields } from "../utils/isEqual";
 
@@ -14,13 +15,15 @@ export const useTodos = () => {
   const [error, setError] = useState(null);
   const [currentPageActive, setCurrentPageActive] = useState(0);
   const [currentPageCompleted, setCurrentPageCompleted] = useState(0);
+  const [totalActiveTodos, setTotalActiveTodos] = useState(0);
+  const [totalCompletedTodos, setTotalCompletedTodos] = useState(0);
   const todosPerPage = 10;
 
   const fetchTodosByPage = async (isDone, page) => {
     try {
       setLoading(true);
       const todos = await getTodosByStatusAPI(isDone, todosPerPage, page);
-      isDone ?  setCompletedTodos(todos) : setActiveTodos(todos);
+      isDone ? setCompletedTodos(todos) : setActiveTodos(todos);
     } catch (error) {
       console.error(error);
       setError(error.message);
@@ -29,15 +32,41 @@ export const useTodos = () => {
     }
   };
 
+  const fetchTotalTodos = async (isDone) => {
+    try {
+      setLoading(true);
+      const total = await countTaskByStatusAPI(isDone);
+      isDone ? setTotalCompletedTodos(total) : setTotalActiveTodos(total);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const reCountTotalTodos = () => {
+    fetchTotalTodos(true);
+    fetchTotalTodos(false);
+  };
+
   const resetCurrentPage = () => {
-    setCurrentPageActive(1);
-    setCurrentPageCompleted(1);
+    setCurrentPageActive(0);
+    setCurrentPageCompleted(0);
   };
 
   useEffect(() => {
     fetchTodosByPage(false, currentPageActive);
     fetchTodosByPage(true, currentPageCompleted);
-  }, [currentPageActive, currentPageCompleted]);
+    fetchTotalTodos(true);
+    fetchTotalTodos(false);
+  }, [
+    currentPageActive,
+    currentPageCompleted,
+    totalActiveTodos,
+    totalCompletedTodos,
+  ]);
 
   const addTodo = async (todo) => {
     try {
@@ -61,7 +90,7 @@ export const useTodos = () => {
       await deleteTodoAPI(id);
       setActiveTodos((prev) => prev.filter((todo) => todo.id !== id));
       setCompletedTodos((prev) => prev.filter((todo) => todo.id !== id));
-      resetCurrentPage();
+      reCountTotalTodos();
     } catch (error) {
       console.error(error);
       setError(error.message);
@@ -117,7 +146,7 @@ export const useTodos = () => {
               )
             );
       }
-      resetCurrentPage();
+      reCountTotalTodos();
     } catch (error) {
       console.error(error);
       setError(error.message);
@@ -132,15 +161,20 @@ export const useTodos = () => {
     completedTodos,
     loading,
     error,
+    setError,
     addTodo,
     deleteTodo,
     editTodo,
     setActiveTodos,
     setCompletedTodos,
+    currentPageActive,
     setCurrentPageActive,
+    currentPageCompleted,
     setCurrentPageCompleted,
     currentPageActive,
     currentPageCompleted,
     todosPerPage,
+    totalActiveTodos,
+    totalCompletedTodos,
   };
 };

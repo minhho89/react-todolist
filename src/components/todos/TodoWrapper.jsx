@@ -9,8 +9,10 @@ import { Section } from "./TodoWrapperChildren/Section";
 import { TodoSectionContent } from "./TodoWrapperChildren/TodoSectionContent";
 import { DraggableTodoList } from "./TodoWrapperChildren/DragableTodoList";
 import { TodoForm } from "./TodoForm";
+import { LoadingOverlay } from "../commons/LoadingOverlay";
 import ReactPaginate from "react-paginate";
 import "../commons/Pagination.css";
+import { ErrorModal } from "../commons/ErrorModal";
 
 export const TodoWrapper = () => {
   const {
@@ -19,27 +21,33 @@ export const TodoWrapper = () => {
     completedTodos,
     loading,
     error,
+    setError,
     addTodo,
     deleteTodo,
     editTodo,
     setActiveTodos,
     setCompletedTodos,
+    currentPageActive,
     setCurrentPageActive,
+    currentPageCompleted,
     setCurrentPageCompleted,
+    totalActiveTodos,
     todosPerPage,
+    totalCompletedTodos,
   } = useTodos();
   const [isMyTasksOpen, setIsMyTasksOpen] = useState(true);
   const [isCompletedTasksOpen, setIsCompletedTasksOpen] = useState(true);
 
-  const handlePageClickActive = (event, status) => {
+  const handlePageClickActive = (event) => {
     console.log("selected page | handlePageClickActive", event.selected);
-    //setCurrentPageActive(Number(event.selected));
+    setCurrentPageActive(event.selected);
+    fetchTodosByPage(false, event.selected);
   };
 
   const handlePageClickCompleted = (event, status) => {
     console.log(`selected page with isDone as ${status} | handlePageClickCompleted`, event.selected);
-    fetchTodosByPage(status === 'completed' ? true : false, event.selected);
-    //setCurrentPageCompleted(Number(event.selected));
+    setCurrentPageCompleted(event.selected);
+    fetchTodosByPage(true, event.selected);
   };
 
   const handleToggleSelection = (setter) => setter((prev) => !prev);
@@ -72,14 +80,14 @@ export const TodoWrapper = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-
   return (
-    <section>
+  <>
+  <LoadingOverlay isLoading={loading} />
+  <ErrorModal isOpen={error} onRequestClose={() => setError(null)} message={error} />
+  <section>
       <TodoForm addTodo={addTodo} />
       <Section
-        title="My Tasks"
+        title={`Active Tasks (${totalActiveTodos})`}
         isOpen={isMyTasksOpen}
         toggleSection={() => handleToggleSelection(setIsMyTasksOpen)}
       >
@@ -93,12 +101,11 @@ export const TodoWrapper = () => {
           />
         </DraggableTodoList>
         <ReactPaginate
-          key="active"
           previousLabel={"←"}
           nextLabel={"→"}
-          pageCount={Math.ceil(100 / todosPerPage)} // TODO: impl. count api to get total count
-          onPageChange={(event) => handlePageClickCompleted(event, 'active')}
-          onPageActive={(event) => handlePageClickCompleted(event,'active')}
+          pageCount={Math.ceil(totalActiveTodos / todosPerPage)}
+          forcePage={currentPageActive}
+          onPageChange={handlePageClickActive}
           containerClassName={"pagination"}
           activeClassName={"active"}
         />
@@ -106,7 +113,7 @@ export const TodoWrapper = () => {
 
       <hr />
       <Section
-        title="Completed Tasks"
+        title={`Completed Tasks (${totalCompletedTodos})`}
         isOpen={isCompletedTasksOpen}
         toggleSection={() => handleToggleSelection(setIsCompletedTasksOpen)}
       >
@@ -121,17 +128,18 @@ export const TodoWrapper = () => {
         </DraggableTodoList>
 
         <ReactPaginate
-          key="completed"
           previousLabel={"←"}
           nextLabel={"→"}
-          pageCount={Math.ceil(100 / todosPerPage)} // TODO: impl. count api to get total count
-          onPageChange={(event) => handlePageClickCompleted(event,'completed')}
-          onPageActive={(event) => handlePageClickActive(event,'completed')}
+          forcePage={currentPageCompleted}
+          pageCount={Math.ceil(totalCompletedTodos / todosPerPage)} 
+          onPageChange={handlePageClickCompleted}
           containerClassName={"pagination"}
           activeClassName={"active"}
         />
       </Section>
     </section>
+  </>
+    
   );
 };
 

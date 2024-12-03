@@ -24,3 +24,7 @@ export const getTodoById = async (id) => {
     return await TodoRepo.getTodoById(id);
 }
 
+export const countTaskByStatus = async (isDone) => {
+    return await TodoRepo.countTaskByStatus(isDone);
+}
+

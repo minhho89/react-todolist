@@ -1,5 +1,6 @@
 import React from 'react';
 import Modal from 'react-modal';
+import PropTypes from 'prop-types';
 import './ErrorModal.css';
 
 Modal.setAppElement('#root');
@@ -18,5 +19,11 @@ export const ErrorModal = ({ isOpen, onRequestClose, message }) => {
             <button onClick={onRequestClose}>Close</button>
         </div>
     </Modal>
-  )
+  );
 }
+
+ErrorModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onRequestClose: PropTypes.func.isRequired,
+  message: PropTypes.string.isRequired,
+};

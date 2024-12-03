@@ -35,4 +35,9 @@ const getTodoById = async (id) => {
     return response.data;
 }
 
-export { getTodos, addTodo, updateTodo, deleteTodo, getTodoById, getTodosByStatus };
+const countTaskByStatus = async (isDone) => {
+    const response = await api.get(`/tasks/count/${isDone}`);
+    return response.data;
+}
+
+export { getTodos, addTodo, updateTodo, deleteTodo, getTodoById, getTodosByStatus, countTaskByStatus };
