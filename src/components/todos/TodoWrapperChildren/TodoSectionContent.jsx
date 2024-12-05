@@ -5,7 +5,7 @@ import { EmptyBanner } from '../../commons/EmptyBanner';
 import { todoPropTypes } from '../../models/Todo';
 
 export const TodoSectionContent = ({
-    todos,
+    todos = [],
     deleteTodo,
     editTodo,
     emptyBannerSrc,

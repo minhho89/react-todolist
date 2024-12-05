@@ -15,37 +15,18 @@ import "../commons/Pagination.css";
 import { ErrorModal } from "../commons/ErrorModal";
 
 export const TodoWrapper = () => {
-  const {
-    fetchTodosByPage,
-    activeTodos,
-    completedTodos,
-    loading,
-    error,
-    setError,
-    addTodo,
-    deleteTodo,
-    editTodo,
-    setActiveTodos,
-    setCompletedTodos,
-    currentPageActive,
-    setCurrentPageActive,
-    currentPageCompleted,
-    setCurrentPageCompleted,
-    totalActiveTodos,
-    todosPerPage,
-    totalCompletedTodos,
-  } = useTodos();
+  const { todos, pagination, pageStatus, actions } = useTodos();
   const [isMyTasksOpen, setIsMyTasksOpen] = useState(true);
   const [isCompletedTasksOpen, setIsCompletedTasksOpen] = useState(true);
 
   const handlePageClickActive = (event) => {
-    setCurrentPageActive(event.selected);
-    fetchTodosByPage(false, event.selected);
+    pagination.setCurrentPageActive(event.selected);
+    actions.fetchTodosByPage(false, event.selected);
   };
 
   const handlePageClickCompleted = (event, status) => {
-    setCurrentPageCompleted(event.selected);
-    fetchTodosByPage(true, event.selected);
+    pagination.setCurrentPageCompleted(event.selected);
+    actions.fetchTodosByPage(true, event.selected);
   };
 
   const handleToggleSelection = (setter) => setter((prev) => !prev);
@@ -56,44 +37,44 @@ export const TodoWrapper = () => {
     if (!over || active.id === over.id) return;
 
     if (active.id !== over.id) {
-      const activeTodoOldIndex = activeTodos.findIndex(
+      const activeTodoOldIndex = todos.activeTodos.findIndex(
         (todo) => todo.id === active.id
       );
-      const activeTodoNewIndex = activeTodos.findIndex(
+      const activeTodoNewIndex = todos.activeTodos.findIndex(
         (todo) => todo.id === over.id
       );
-      setActiveTodos(
-        arrayMove(activeTodos, activeTodoOldIndex, activeTodoNewIndex)
+      actions.setActiveTodos(
+        arrayMove(todos.activeTodos, activeTodoOldIndex, activeTodoNewIndex)
       );
 
-      const completedTodoOldIndex = completedTodos.findIndex(
+      const completedTodoOldIndex = todos.completedTodos.findIndex(
         (todo) => todo.id === active.id
       );
-      const completedTodoNewIndex = completedTodos.findIndex(
+      const completedTodoNewIndex = todos.completedTodos.findIndex(
         (todo) => todo.id === over.id
       );
-      setCompletedTodos(
-        arrayMove(completedTodos, completedTodoOldIndex, completedTodoNewIndex)
+      actions.setCompletedTodos(
+        arrayMove(todos.completedTodos, completedTodoOldIndex, completedTodoNewIndex)
       );
     }
   };
 
   return (
   <>
-  <LoadingOverlay isLoading={loading} />
-  <ErrorModal isOpen={error} onRequestClose={() => setError(null)} message={error} />
+  <LoadingOverlay isLoading={pageStatus.loading} />
+  <ErrorModal isOpen={pageStatus.error} onRequestClose={() => actions.setError(null)} message={pageStatus.error} />
   <section>
-      <TodoForm addTodo={addTodo} />
+      <TodoForm addTodo={actions.addTodo} />
       <Section
-        title={`Active Tasks (${totalActiveTodos})`}
+        title={`Active Tasks (${pagination.totalActiveTodos})`}
         isOpen={isMyTasksOpen}
         toggleSection={() => handleToggleSelection(setIsMyTasksOpen)}
       >
-        <DraggableTodoList todos={activeTodos} onDragEnd={handleOnDragEnd}>
+        <DraggableTodoList todos={todos.activeTodos} onDragEnd={handleOnDragEnd}>
           <TodoSectionContent
-            todos={activeTodos}
-            deleteTodo={deleteTodo}
-            editTodo={editTodo}
+            todos={todos.activeTodos}
+            deleteTodo={actions.deleteTodo}
+            editTodo={actions.editTodo}
             emptyBannerSrc={EmptyTodoImage}
             emptyBannerMessage="Add more tasks!"
           />
@@ -101,8 +82,8 @@ export const TodoWrapper = () => {
         <ReactPaginate
           previousLabel={"←"}
           nextLabel={"→"}
-          pageCount={Math.ceil(totalActiveTodos / todosPerPage)}
-          forcePage={currentPageActive}
+          pageCount={Math.ceil(pagination.totalActiveTodos / pagination.todosPerPage)}
+          forcePage={pagination.currentPageActive}
           onPageChange={handlePageClickActive}
           containerClassName={"pagination"}
           activeClassName={"active"}
@@ -111,15 +92,15 @@ export const TodoWrapper = () => {
 
       <hr />
       <Section
-        title={`Completed Tasks (${totalCompletedTodos})`}
+        title={`Completed Tasks (${pagination.totalCompletedTodos})`}
         isOpen={isCompletedTasksOpen}
         toggleSection={() => handleToggleSelection(setIsCompletedTasksOpen)}
       >
-        <DraggableTodoList todos={completedTodos} onDragEnd={handleOnDragEnd}>
+        <DraggableTodoList todos={todos.completedTodos} onDragEnd={handleOnDragEnd}>
           <TodoSectionContent
-            todos={completedTodos}
-            deleteTodo={deleteTodo}
-            editTodo={editTodo}
+            todos={todos.completedTodos}
+            deleteTodo={actions.deleteTodo}
+            editTodo={actions.editTodo}
             emptyBannerSrc={EmptyFinishedImage}
             emptyBannerMessage="No completed tasks!"
           />
@@ -128,8 +109,8 @@ export const TodoWrapper = () => {
         <ReactPaginate
           previousLabel={"←"}
           nextLabel={"→"}
-          forcePage={currentPageCompleted}
-          pageCount={Math.ceil(totalCompletedTodos / todosPerPage)} 
+          forcePage={pagination.currentPageCompleted}
+          pageCount={Math.ceil(pagination.totalCompletedTodos / pagination.todosPerPage)} 
           onPageChange={handlePageClickCompleted}
           containerClassName={"pagination"}
           activeClassName={"active"}
@@ -142,10 +123,29 @@ export const TodoWrapper = () => {
 };
 
 TodoWrapper.propTypes = {
-  todos: PropTypes.arrayOf(todoPropTypes),
-  setTodos: PropTypes.func,
-  addTodo: PropTypes.func,
-  deleteTodo: PropTypes.func,
-  editTodo: PropTypes.func,
-  handleOnDragEnd: PropTypes.func,
+  todos: PropTypes.shape({
+    activeTodos: PropTypes.arrayOf(PropTypes.shape(todoPropTypes)),
+    completedTodos: PropTypes.arrayOf(PropTypes.shape(todoPropTypes)),
+  }),
+  pagination: PropTypes.shape({
+    currentPageActive: PropTypes.number,
+    currentPageCompleted: PropTypes.number,
+    totalActiveTodos: PropTypes.number,
+    totalCompletedTodos: PropTypes.number,
+    todosPerPage: PropTypes.number,
+  }),
+  pageStatus: PropTypes.shape({
+    loading: PropTypes.bool,
+    error: PropTypes.string,
+  }),
+  actions: PropTypes.shape({
+    fetchTodosByPage: PropTypes.func,
+    setActiveTodos: PropTypes.func,
+    setCompletedTodos: PropTypes.func,
+    addTodo: PropTypes.func,
+    deleteTodo: PropTypes.func,
+    editTodo: PropTypes.func,
+    setError: PropTypes.func,
+  }),
 };
+
